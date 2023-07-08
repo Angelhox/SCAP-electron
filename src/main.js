@@ -228,7 +228,53 @@ ipcMain.handle("getImplementoById", async (event, id) => {
     return result;
   });
 
+//   funciones de los Medidores
 
+ipcMain.handle("getMedidores", async () => {
+  const conn = await getConnection();
+  const results = conn.query("Select * from medidores order by id desc;");
+  console.log(results);
+  return results;
+});
+ipcMain.handle("createMedidor", async (event, medidor) => {
+try {
+  const conn = await getConnection();
+  console.log("Recibido: ", medidor);
+  //   product.price = parseFloat(product.price);
+  const result = await conn.query("Insert into medidores set ?", medidor);
+  console.log(result);
+  new Notification({
+    title: "Electrom Mysql",
+    body: "New medidor saved succesfully",
+  }).show();
+  medidor.id = result.insertId;
+  return medidor;
+} catch (error) {
+  console.log(error);
+}
+});
+ipcMain.handle("getMedidorById", async (event, id) => {
+  const conn = await getConnection();
+  const result = await conn.query("Select * from medidores where id = ?", id);
+  console.log(result[0]);
+  return result[0];
+});
+ipcMain.handle("updateMedidor", async (event, id, medidor) => {
+  const conn = await getConnection();
+  const result = await conn.query("UPDATE medidores set ? where id = ?", [
+   medidor,
+    id,
+  ]);
+  console.log(result);
+  return result;
+});
+ipcMain.handle("deleteMedidor", async (event, id) => {
+  console.log("id from main.js: ", id);
+  const conn = await getConnection();
+  const result = await conn.query("DELETE from medidores where id = ?", id);
+  console.log(result);
+  return result;
+});
 
 
 

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./principal.css" />
+    <link
+      rel="stylesheet"
+      href="../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../node_modules/@fortawesome/fontawesome-free/css/solid.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../node_modules/@fortawesome/fontawesome-free/css/brands.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../node_modules/select2/dist/css/select2.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../node_modules/select2/dist/css/select2.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+
+    <title>Instalaciones</title>
+  </head>
+  <body class="vh-100 overflow-hidden body">
+    <!-- Navbar -->
+    <header style="background-color: yellow; border: 0; padding: 0">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top">
+        <div class="container-fluid">
+          <!-- Logo -->
+          <a class="navbar-brand fs-1" href="#">SCAP </a>
+
+          <!-- <img src="../assets/fonts/logo.png" alt="logo not-found">
+        <a class="navbar-brand fs-4" href="#">SCAP STDO </a> -->
+          <!-- Toggle button -->
+          <button
+            class="navbar-toggler shadow-none border-0"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- SideBar -->
+          <div
+            class="sidebar offcanvas offcanvas-start"
+            tabindex="-1"
+            id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel"
+          >
+            <!-- Sidebar Header -->
+            <div class="offcanvas-header text-white border-bottom">
+              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white shadow-none"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              ></button>
+            </div>
+            <!-- Sidebar Body -->
+            <div class="offcanvas-body d-flex flex-column p-4 flex-lg-row">
+              <ul
+                class="navbar-nav justify-content-center fs-5 flex-grow-1 pe-3 align-items-center"
+              >
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#"
+                    >Inicio</a
+                  >
+                </li>
+                <li class="nav-item mx-2">
+                  <a class="nav-link" href="#">Pagos</a>
+                </li>
+                <li class="nav-item mx-2">
+                  <a onclick="abrirSocios()" class="nav-link" href="#"
+                    >Registros</a
+                  >
+                </li>
+
+                <li class="nav-item mx-2">
+                  <a class="nav-link" href="#">Consultas</a>
+                </li>
+                <li class="nav-item mx-2">
+                  <a class="nav-link" href="#">Inventario</a>
+                </li>
+              </ul>
+              <!-- Login/Sign up -->
+              <div
+                class="d-flex justify-content-center align-items-center gap-3 flex-column flex-lg-row"
+              >
+                <button
+                  onclick="mostrarLogin()"
+                  class="text-white px-3 py-1 rounded-1 btn bg-primary"
+                >
+                  Iniciar sesion
+                </button>
+                <button class="text-black px-3 py-1 rounded-1 btn bg-white">
+                  Salir
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="row container-fluid" style="padding-top: 150px">
+      <div class="col-12">
+        <p class="text-white fs-5">Inicio/Registros/Implementos</p>
+      </div>
+      <div
+        class="col-lg-6 col-md-6 col-sm-12"
+        style="
+          height: 60vh;
+          overflow-y: auto;
+          overflow-x: auto;
+          padding: 10px;
+          display: none;
+        "
+      >
+        <!-- Tabla de listado de usuarios -->
+        <div style="width: 100%; height: 100%">
+          <table class="table">
+            <thead class="table-dark">
+              <tr>
+                <th colspan="9" class="text-center fs-4">
+                  Listado de medidores en fucionamiento
+                  <i class="fa-solid fa-user-tie"></i>
+                </th>
+              </tr>
+              <tr>
+                <th>Codigo</th>
+                <th>Socio</th>
+                <th>Cédula</th>
+
+                <th>Ubicacion</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="medidores">
+              <tr>
+                <td>100200300</td>
+                <td>Mario Salinas Fuentes</td>
+                <td>1725674829</td>
+
+                <td>calle principal y secundaria</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top: 10px">
+        <form class="form-horizontal" id="medidorForm">
+          <div class="row">
+            <div class="col-12 text-white text-center fs-4">
+              Datos del contrato
+            </div>
+            <div class="col-3">
+              <label class="text-white">Fecha del contrato</label>
+              <input
+                type="date"
+                class="form-control my-2"
+                placeholder="Fecha de Instalación"
+                id="fechaInstalacion"
+              />
+            </div>
+            <div class="col-12 text-white justify-content-start fs-4">
+              Datos del socio contratante
+            </div>
+            <div class="col-3 my-2">
+              <!-- <div class="form-group">
+                  <label>Multiple</label> -->
+              <select
+                class="form-control select2 select2-hidden-accessible"
+                data-placeholder="Select a State"
+                style="width: 100%"
+                tabindex="-1"
+                aria-hidden="true"
+              >
+                <option selected>Cédula del socio</option>
+                <option>Alaska</option>
+                <option>California</option>
+                <option>Delaware</option>
+                <option>Tennessee</option>
+                <option>Texas</option>
+                <option>Washington</option>
+              </select>
+              <!-- </div> -->
+            </div>
+            <div class="col-3 my-2">
+              <!-- <div class="form-group">
+                    <label>Multiple</label> -->
+              <select
+                class="form-control select2 select2-hidden-accessible"
+                data-placeholder="Select a State"
+                style="width: 100%"
+                tabindex="-1"
+                aria-hidden="true"
+              >
+                <option selected>Apellidos del socio</option>
+                <option>Alaska</option>
+                <option>California</option>
+                <option>Delaware</option>
+                <option>Tennessee</option>
+                <option>Texas</option>
+                <option>Washington</option>
+              </select>
+              <!-- </div> -->
+            </div>
+            <div class="col-3">
+              <input
+                type="text"
+                class="form-control my-2"
+                placeholder="Nombres del socio"
+                id="nombresocio"
+              />
+            </div>
+            <div class="col-3 d-flex justify-content-end my-2">
+              <button class="btn btn-primary mx-2 rounded-2">
+                Administrar socios
+              </button>
+            </div>
+            <div class="col-12 text-white fs-4">Servicios del contrato</div>
+            <div class="col-3">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckDefault"
+                />
+                <label class="form-check-label" for="flexSwitchCheckDefault"
+                  >Recolección de desechos</label
+                >
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckChecked"
+                  checked
+                />
+                <label class="form-check-label" for="flexSwitchCheckChecked"
+                  >Alcanterillado</label
+                >
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckDisabled"
+         
+                />
+                <label class="form-check-label" for="flexSwitchCheckDisabled"
+                  >Agua Potable</label
+                >
+              </div>
+            </div>
+            <div class="col-3">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="flexSwitchCheckDisabled"
+           
+                  />
+                  <label class="form-check-label" for="flexSwitchCheckDisabled"
+                    >Cobro escrituras</label
+                  >
+                </div>
+              </div>
+            <!-- <div class="form-check form-switch col-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="flexSwitchCheckCheckedDisabled"
+                checked
+                disabled
+              />
+              <label
+                class="form-check-label"
+                for="flexSwitchCheckCheckedDisabled"
+                >Disabled checked switch checkbox input</label
+              >
+            </div> -->
+            <div class="col-12 text-white fs-4">Contrato con medidor</div>
+            <!-- Select con la lista de medidores disponible -->
+
+            <div class="col-3">
+              <label class="text-white">Fecha de instalación</label>
+              <input
+                type="date"
+                class="form-control my-2"
+                placeholder="Fecha de Instalación"
+                id="fechaInstalacion"
+              />
+            </div>
+            <div class="col-3">
+              <label class="text-white">Selecciona un medidor disponible</label>
+              <select
+                class="form-control my-2"
+                aria-label="Default select example"
+              >
+                <option selected>Selecciona un medidor</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div>
+
+            <div class="col-3 d-flex align-items-end">
+              <input
+                type="text"
+                class="form-control my-2"
+                placeholder="Código del medidor"
+                id="codigo"
+              />
+            </div>
+            <div class="col-3 d-flex align-items-end">
+              <input
+                type="text"
+                class="form-control my-2"
+                placeholder="Marca"
+                id="marca"
+              />
+            </div>
+            <div class="col-6">
+              <input
+                type="text"
+                class="form-control my-2"
+                placeholder="Descripcion del medidor"
+                id="descripcion"
+              />
+            </div>
+
+            <div class="col-12 text-white text-center fs-4">
+              Ubicacion del nuevo medidor
+            </div>
+            <div class="col-4">
+              <input
+                type="text"
+                step="any"
+                class="form-control my-2"
+                placeholder="Numero de casa"
+                id="numerocasa"
+              />
+            </div>
+            <div class="col-4">
+              <input
+                type="text"
+                step="any"
+                class="form-control my-2"
+                placeholder="Barrio"
+                id="barrio"
+              />
+            </div>
+            <div class="col-4">
+              <input
+                type="text"
+                step="any"
+                class="form-control my-2"
+                placeholder="Calle principal"
+                id="principal"
+              />
+            </div>
+            <div class="col-4">
+              <input
+                type="text"
+                step="any"
+                class="form-control my-2"
+                placeholder="Calle secundaria"
+                id="secundaria"
+              />
+            </div>
+            <div class="col-6">
+              <input
+                type="text"
+                step="any"
+                class="form-control my-2"
+                placeholder="Referencia"
+                id="referencia"
+              />
+            </div>
+            <div class="col-6">
+              <input
+                type="text"
+                step="any"
+                class="form-control my-2"
+                placeholder="Observacion"
+                id="observacion"
+              />
+            </div>
+
+            <div class="col-12 d-flex justify-content-end">
+              <button class="btn btn-primary mx-2 rounded-2">Guardar</button>
+              <button class="btn btn-danger rounded-2">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <dialog
+      id="loginDialog"
+      style="background-color: #00000000; border: #00000000"
+      class="w-100 vh-100"
+    >
+      <section
+        style="width: 100%; height: 100%"
+        class="d-flex flex-column justify-content-evenly align-items-center text-white container"
+      >
+        <div class="col-xl-6 col-lg-8 col-md-10 col-sm-12">
+          <form
+            id="loginForm"
+            class="rounded-4"
+            style="
+              background-color: rgba(255, 255, 255, 0.15);
+              backdrop-filter: blur(10px);
+            "
+          >
+            <div style="padding: 100px 15px">
+              <div class="row mb-3">
+                <label for="inputEmail3" class="col-sm-2 col-form-label"
+                  >Email</label
+                >
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="inputEmail3" />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="inputPassword3" class="col-sm-2 col-form-label"
+                  >Password</label
+                >
+                <div class="col-sm-10">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="inputPassword3"
+                  />
+                </div>
+              </div>
+
+              <button
+                class="btn btn-primary align-self-end"
+                onclick="abrirInterface()"
+              >
+                Ingresar
+              </button>
+              <button class="btn btn-primary align-self-end">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </dialog>
+  </body>
+  <script src="./bootstrap/js/bootstrap.min.js"></script>
+  <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="../../node_modules/select2/dist/js/select2.min.js"></script>
+
+  <script src="./medidores.js" defer></script>
+  <script>
+    $(document).ready(function () {
+      $(".select2").select2({
+        closeOnSelect: false,
+      });
+    });
+  </script>
+</html>
+<style>
+  body {
+    background: #eee;
+  }
+  .form-control {
+    border-radius: 0;
+    box-shadow: none;
+    border-color: #d2d6de;
+  }
+
+  .select2-hidden-accessible {
+    border: 0 !important;
+    clip: rect(0 0 0 0) !important;
+    height: 1px !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    position: absolute !important;
+    width: 1px !important;
+  }
+
+  .form-control {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s,
+      -webkit-box-shadow ease-in-out 0.15s;
+    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  }
+
+  .select2-container--default .select2-selection--single,
+  .select2-selection .select2-selection--single {
+    border: 1px solid #d2d6de;
+    border-radius: 0;
+    padding: 6px 12px;
+    height: 34px;
+  }
+
+  .select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+  }
+
+  .select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 28px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .select2-container .select2-selection--single .select2-selection__rendered {
+    padding-right: 10px;
+  }
+
+  .select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 0;
+    padding-right: 0;
+    height: auto;
+    margin-top: -3px;
+  }
+
+  .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
+    color: #444;
+    line-height: 28px;
+  }
+
+  .select2-container--default .select2-selection--single,
+  .select2-selection .select2-selection--single {
+    border: 1px solid #d2d6de;
+    border-radius: 0 !important;
+    padding: 6px 12px;
+    height: 40px !important;
+  }
+
+  .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    height: 26px;
+    position: absolute;
+    top: 6px !important;
+    right: 1px;
+    width: 20px;
+  }
+</style>

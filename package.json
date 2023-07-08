@@ -16,11 +16,14 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.0",
     "animate.css": "^4.1.1",
+    "bootstrap": "^5.3.0",
     "electron": "^25.2.0",
     "electron-packager": "^17.1.1",
     "electron-reload": "^2.0.0-alpha.1",
+    "jquery": "^3.7.0",
     "mysql": "^2.18.1",
     "promise-mysql": "^5.2.0",
-    "reload": "^3.2.1"
+    "reload": "^3.2.1",
+    "select2": "^4.1.0-rc.0"
   }
 }
