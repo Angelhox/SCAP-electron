@@ -21,8 +21,8 @@
   </head>
   <body class="vh-100 overflow-hidden body">
     <!-- Navbar -->
-    <header style="background-color: yellow; border: 0; padding: 0">
-      <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top">
+    <header class="header">
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top header">
         <div class="container-fluid">
           <!-- Logo -->
           <a class="navbar-brand fs-1" href="#">SCAP </a>
@@ -63,22 +63,66 @@
                 class="navbar-nav justify-content-center fs-5 flex-grow-1 pe-3 align-items-center"
               >
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#"
+                  <a
+                    class="nav-link active"
+                    aria-current="page"
+                    onclick="abrirInicio()"
                     >Inicio</a
                   >
                 </li>
+
                 <li class="nav-item mx-2">
-                  <a class="nav-link" href="#">Pagos</a>
-                </li>
-                <li class="nav-item mx-2">
-                  <a class="nav-link" href="#">Registros</a>
+                  <div class="dropdown">
+                    <button
+                      class="nav-link btn btn-outline dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Registros
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li class="nav-item mx-2">
+                        <a class="dropdown-item" onclick="abrirSocios()"
+                          >Socios</a
+                        >
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li class="nav-item mx-2">
+                        <a class="dropdown-item" onclick="abrirUsuarios()"
+                          >Usuarios</a
+                        >
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li class="nav-item mx-2">
+                        <a class="dropdown-item" onclick="abrirImplementos()"
+                          >Inventario</a
+                        >
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li class="nav-item mx-2">
+                        <a class="dropdown-item" onclick="abrirParametros()"
+                          >Configuraciones</a
+                        >
+                      </li>
+                      <!-- <li>
+                        <a class="dropdown-item" href="#"
+                          >Something else here</a
+                        >
+                      </li> -->
+                    </ul>
+                  </div>
                 </li>
 
                 <li class="nav-item mx-2">
-                  <a class="nav-link" href="#">Consultas</a>
+                  <a class="nav-link" onclick="abrirPagos()">Pagos</a>
+                </li>
+
+                <li class="nav-item mx-2">
+                  <a class="nav-link" onclick="abrirPlanillas()">Planillas</a>
                 </li>
                 <li class="nav-item mx-2">
-                  <a class="nav-link"onclick="abrirImplementos()">Inventario</a>
+                  <a class="nav-link" onclick="abrirContratos()">Contratos</a>
                 </li>
               </ul>
               <!-- Login/Sign up -->
@@ -147,9 +191,7 @@
       </div>
       <div class="col-lg-4 col-md-4 col-sm-12" style="padding-top: 10px">
         <form class="form-horizontal" id="socioForm">
-          <div class="col-12 text-white text-center fs-4">
-            Datos del Socio
-          </div>
+          <div class="col-12 text-white text-center fs-4">Datos del Socio</div>
           <input type="text" class="form-control my-2" placeholder="Id" />
           <input
             type="text"
@@ -261,6 +303,7 @@
       </section>
     </dialog>
   </body>
+  <script src="../../node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
   <script src="./bootstrap/js/bootstrap.min.js"></script>
   <script src="./socios.js" defer></script>
   <script>

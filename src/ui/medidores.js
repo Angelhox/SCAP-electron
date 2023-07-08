@@ -1,4 +1,5 @@
 const { ipcRenderer } = require("electron");
+
 const medidorCodigo = document.getElementById("codigo");
 const medidorInstalacion = document.getElementById("fechaInstalacion");
 const medidorMarca = document.getElementById("marca");
@@ -103,9 +104,6 @@ const getMedidores = async () => {
   renderMedidores(medidores);
 };
 async function init() {
-  $(".select2").select2({
-    closeOnSelect: false,
-  });
   await getMedidores();
 }
 function formatearFecha(fecha) {
@@ -116,8 +114,37 @@ function formatearFecha(fecha) {
   const fechaFormateada = `${year}-${month}-${day}`;
   return fechaFormateada;
 }
+// funciones del navbar
+const abrirInicio = async () => {
+  const url = "src/ui/principal.html";
+  await ipcRenderer.send("abrirInterface", url);
+};
 const abrirSocios = async () => {
   const url = "src/ui/socios.html";
+  await ipcRenderer.send("abrirInterface", url);
+};
+const abrirUsuarios = async () => {
+  const url = "src/ui/usuarios.html";
+  await ipcRenderer.send("abrirInterface", url);
+};
+const abrirPagos = async () => {
+  const url = "src/ui/pagos.html";
+  await ipcRenderer.send("abrirInterface", url);
+};
+const abrirPlanillas = async () => {
+  const url = "src/ui/planillas.html";
+  await ipcRenderer.send("abrirInterface", url);
+};
+const abrirParametros = async () => {
+  const url = "src/ui/parametros.html";
+  await ipcRenderer.send("abrirInterface", url);
+};
+const abrirImplementos = async () => {
+  const url = "src/ui/implementos.html";
+  await ipcRenderer.send("abrirInterface", url);
+};
+const abrirContratos = async () => {
+  const url = "src/ui/medidores.html";
   await ipcRenderer.send("abrirInterface", url);
 };
 
@@ -125,32 +152,9 @@ function mostrarLogin() {
   const dialog = document.getElementById("loginDialog");
   dialog.showModal();
 }
-
-$(document).ready(function () {
-  $("#mySelect").select2();
+$(document).ready(function() {
+  $('.select2').select2({
+  closeOnSelect: false
 });
-
-$(document).ready(function () {
-  $("#mySelect").selectpicker();
-
-  $("#mySelect").on(
-    "changed.bs.select",
-    function (e, clickedIndex, isSelected, previousValue) {
-      var searchText = $(this).val();
-      $("#mySelect option").each(function () {
-        var optionText = $(this).text();
-        if (optionText.toLowerCase().includes(searchText.toLowerCase())) {
-          $(this).show();
-        } else {
-          $(this).hide();
-        }
-      });
-      $("#mySelect").selectpicker("refresh");
-    }
-  );
-});
-// In your Javascript (external .js resource or <script> tag)
-$(document).ready(function () {
-  $("#mi-select").select2();
 });
 init();

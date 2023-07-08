@@ -58,59 +58,20 @@
                     >Inicio</a
                   >
                 </li>
-
                 <li class="nav-item mx-2">
-                  <div class="dropdown">
-                    <button
-                      class="nav-link btn btn-outline dropdown-toggle"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Registros
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li class="nav-item mx-2">
-                        <a class="dropdown-item" onclick="abrirSocios()"
-                          >Socios</a
-                        >
-                      </li>
-                      <li><hr class="dropdown-divider" /></li>
-                      <li class="nav-item mx-2">
-                        <a class="dropdown-item" onclick="abrirUsuarios()"
-                          >Usuarios</a
-                        >
-                      </li>
-                      <li><hr class="dropdown-divider" /></li>
-                      <li class="nav-item mx-2">
-                        <a class="dropdown-item" onclick="abrirImplementos()"
-                          >Inventario</a
-                        >
-                      </li>
-                      <li><hr class="dropdown-divider" /></li>
-                      <li class="nav-item mx-2">
-                        <a class="dropdown-item" onclick="abrirParametros()"
-                          >Configuraciones</a
-                        >
-                      </li>
-                      <!-- <li>
-                        <a class="dropdown-item" href="#"
-                          >Something else here</a
-                        >
-                      </li> -->
-                    </ul>
-                  </div>
+                  <a class="nav-link" href="#">Pagos</a>
+                </li>
+                <li class="nav-item mx-2">
+                  <a class="nav-link" onclick="abrirSocios()">Registros</a>
                 </li>
 
                 <li class="nav-item mx-2">
-                  <a class="nav-link" onclick="abrirPagos()">Pagos</a>
-                </li>
-
-                <li class="nav-item mx-2">
-                  <a class="nav-link" onclick="abrirPlanillas()">Planillas</a>
+                  <a class="nav-link" href="#">Consultas</a>
                 </li>
                 <li class="nav-item mx-2">
-                  <a class="nav-link" onclick="abrirContratos()">Contratos</a>
+                  <a class="nav-link" onclick="abrirImplementos()"
+                    >Inventario</a
+                  >
                 </li>
               </ul>
               <!-- Login/Sign up -->
@@ -132,21 +93,7 @@
         </div>
       </nav>
     </header>
-    <main>
-      <section
-        class="w-100 vh-100 d-flex flex-column justify-content-center align-items-center text-white fs-1"
-      >
-        <img
-          src="../assets/fonts/logo.png"
-          alt="logo not-found"
-          width="200px"
-          height="200px"
-          style="width: 40%; height: 50%"
-        />
 
-        <h1 style="font-size: 1em">Santo Domingo I</h1>
-      </section>
-    </main>
     <dialog
       id="loginDialog"
       style="background-color: #00000000; border: #00000000"
@@ -200,7 +147,12 @@
       </section>
     </dialog>
   </body>
-  <script src="./inicio.js" defer></script>
-  <script src="../../node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
   <script src="./bootstrap/js/bootstrap.min.js"></script>
+  <script src="./inicio.js" defer></script>
+  <script>
+    function mostrarLogin() {
+      const dialog = document.getElementById("loginDialog");
+      dialog.showModal();
+    }
+  </script>
 </html>

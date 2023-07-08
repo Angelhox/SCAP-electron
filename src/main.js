@@ -88,11 +88,11 @@ ipcMain.on("abrirInterface", (event, interfaceName) => {
 //   });
 // Funciones de los usuarios
 ipcMain.handle("getUsuarios", async () => {
-    const conn = await getConnection();
-    const results = conn.query("Select * from usuarios order by id desc;");
-    console.log(results);
-    return results;
-  });
+  const conn = await getConnection();
+  const results = conn.query("Select * from usuarios order by id desc;");
+  console.log(results);
+  return results;
+});
 ipcMain.handle("createUsuario", async (event, usuario) => {
   try {
     const conn = await getConnection();
@@ -112,35 +112,35 @@ ipcMain.handle("createUsuario", async (event, usuario) => {
 });
 
 ipcMain.handle("getUsuarioById", async (event, id) => {
-    const conn = await getConnection();
-    const result = await conn.query("Select * from usuarios where id = ?", id);
-    console.log(result[0]);
-    return result[0];
-  });
-  ipcMain.handle("updateUsuario", async (event, id, usuario) => {
-    const conn = await getConnection();
-    const result = await conn.query("UPDATE usuarios set ? where id = ?", [
-      usuario,
-      id,
-    ]);
-    console.log(result);
-    return result;
-  });
-  ipcMain.handle("deleteUsuario", async (event, id) => {
-    console.log("id from main.js: ", id);
-    const conn = await getConnection();
-    const result = await conn.query("DELETE from usuarios where id = ?", id);
-    console.log(result);
-    return result;
-  });
+  const conn = await getConnection();
+  const result = await conn.query("Select * from usuarios where id = ?", id);
+  console.log(result[0]);
+  return result[0];
+});
+ipcMain.handle("updateUsuario", async (event, id, usuario) => {
+  const conn = await getConnection();
+  const result = await conn.query("UPDATE usuarios set ? where id = ?", [
+    usuario,
+    id,
+  ]);
+  console.log(result);
+  return result;
+});
+ipcMain.handle("deleteUsuario", async (event, id) => {
+  console.log("id from main.js: ", id);
+  const conn = await getConnection();
+  const result = await conn.query("DELETE from usuarios where id = ?", id);
+  console.log(result);
+  return result;
+});
 
-  // Funciones de los socios
+// Funciones de los socios
 ipcMain.handle("getSocios", async () => {
-    const conn = await getConnection();
-    const results = conn.query("Select * from socios order by id desc;");
-    console.log(results);
-    return results;
-  });
+  const conn = await getConnection();
+  const results = conn.query("Select * from socios order by id desc;");
+  console.log(results);
+  return results;
+});
 ipcMain.handle("createSocio", async (event, socio) => {
   try {
     const conn = await getConnection();
@@ -159,41 +159,44 @@ ipcMain.handle("createSocio", async (event, socio) => {
   }
 });
 ipcMain.handle("getSocioById", async (event, id) => {
-    const conn = await getConnection();
-    const result = await conn.query("Select * from socios where id = ?", id);
-    console.log(result[0]);
-    return result[0];
-  });
-  ipcMain.handle("updateSocio", async (event, id, socio) => {
-    const conn = await getConnection();
-    const result = await conn.query("UPDATE socios set ? where id = ?", [
-     socio,
-      id,
-    ]);
-    console.log(result);
-    return result;
-  });
-  ipcMain.handle("deleteSocio", async (event, id) => {
-    console.log("id from main.js: ", id);
-    const conn = await getConnection();
-    const result = await conn.query("DELETE from socios where id = ?", id);
-    console.log(result);
-    return result;
-  });
+  const conn = await getConnection();
+  const result = await conn.query("Select * from socios where id = ?", id);
+  console.log(result[0]);
+  return result[0];
+});
+ipcMain.handle("updateSocio", async (event, id, socio) => {
+  const conn = await getConnection();
+  const result = await conn.query("UPDATE socios set ? where id = ?", [
+    socio,
+    id,
+  ]);
+  console.log(result);
+  return result;
+});
+ipcMain.handle("deleteSocio", async (event, id) => {
+  console.log("id from main.js: ", id);
+  const conn = await getConnection();
+  const result = await conn.query("DELETE from socios where id = ?", id);
+  console.log(result);
+  return result;
+});
 //   funciones de los Implementos
 
 ipcMain.handle("getImplementos", async () => {
-    const conn = await getConnection();
-    const results = conn.query("Select * from implementos order by id desc;");
-    console.log(results);
-    return results;
-  });
+  const conn = await getConnection();
+  const results = conn.query("Select * from implementos order by id desc;");
+  console.log(results);
+  return results;
+});
 ipcMain.handle("createImplemento", async (event, implemento) => {
   try {
     const conn = await getConnection();
     console.log("Recibido: ", implemento);
     //   product.price = parseFloat(product.price);
-    const result = await conn.query("Insert into implementos set ?", implemento);
+    const result = await conn.query(
+      "Insert into implementos set ?",
+      implemento
+    );
     console.log(result);
     new Notification({
       title: "Electrom Mysql",
@@ -206,27 +209,27 @@ ipcMain.handle("createImplemento", async (event, implemento) => {
   }
 });
 ipcMain.handle("getImplementoById", async (event, id) => {
-    const conn = await getConnection();
-    const result = await conn.query("Select * from implementos where id = ?", id);
-    console.log(result[0]);
-    return result[0];
-  });
-  ipcMain.handle("updateImplemento", async (event, id, implemento) => {
-    const conn = await getConnection();
-    const result = await conn.query("UPDATE implementos set ? where id = ?", [
-     implemento,
-      id,
-    ]);
-    console.log(result);
-    return result;
-  });
-  ipcMain.handle("deleteImplemento", async (event, id) => {
-    console.log("id from main.js: ", id);
-    const conn = await getConnection();
-    const result = await conn.query("DELETE from implementos where id = ?", id);
-    console.log(result);
-    return result;
-  });
+  const conn = await getConnection();
+  const result = await conn.query("Select * from implementos where id = ?", id);
+  console.log(result[0]);
+  return result[0];
+});
+ipcMain.handle("updateImplemento", async (event, id, implemento) => {
+  const conn = await getConnection();
+  const result = await conn.query("UPDATE implementos set ? where id = ?", [
+    implemento,
+    id,
+  ]);
+  console.log(result);
+  return result;
+});
+ipcMain.handle("deleteImplemento", async (event, id) => {
+  console.log("id from main.js: ", id);
+  const conn = await getConnection();
+  const result = await conn.query("DELETE from implementos where id = ?", id);
+  console.log(result);
+  return result;
+});
 
 //   funciones de los Medidores
 
@@ -237,21 +240,21 @@ ipcMain.handle("getMedidores", async () => {
   return results;
 });
 ipcMain.handle("createMedidor", async (event, medidor) => {
-try {
-  const conn = await getConnection();
-  console.log("Recibido: ", medidor);
-  //   product.price = parseFloat(product.price);
-  const result = await conn.query("Insert into medidores set ?", medidor);
-  console.log(result);
-  new Notification({
-    title: "Electrom Mysql",
-    body: "New medidor saved succesfully",
-  }).show();
-  medidor.id = result.insertId;
-  return medidor;
-} catch (error) {
-  console.log(error);
-}
+  try {
+    const conn = await getConnection();
+    console.log("Recibido: ", medidor);
+    //   product.price = parseFloat(product.price);
+    const result = await conn.query("Insert into medidores set ?", medidor);
+    console.log(result);
+    new Notification({
+      title: "Electrom Mysql",
+      body: "New medidor saved succesfully",
+    }).show();
+    medidor.id = result.insertId;
+    return medidor;
+  } catch (error) {
+    console.log(error);
+  }
 });
 ipcMain.handle("getMedidorById", async (event, id) => {
   const conn = await getConnection();
@@ -262,7 +265,7 @@ ipcMain.handle("getMedidorById", async (event, id) => {
 ipcMain.handle("updateMedidor", async (event, id, medidor) => {
   const conn = await getConnection();
   const result = await conn.query("UPDATE medidores set ? where id = ?", [
-   medidor,
+    medidor,
     id,
   ]);
   console.log(result);
@@ -276,8 +279,6 @@ ipcMain.handle("deleteMedidor", async (event, id) => {
   return result;
 });
 
-
-
-  module.exports = {
-    createWindow,
-  };
+module.exports = {
+  createWindow,
+};

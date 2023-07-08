@@ -34,8 +34,8 @@
   </head>
   <body class="vh-100 overflow-hidden body">
     <!-- Navbar -->
-    <header style="background-color: yellow; border: 0; padding: 0">
-      <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top">
+    <header class="header">
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top header">
         <div class="container-fluid">
           <!-- Logo -->
           <a class="navbar-brand fs-1" href="#">SCAP </a>
@@ -76,24 +76,66 @@
                 class="navbar-nav justify-content-center fs-5 flex-grow-1 pe-3 align-items-center"
               >
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#"
+                  <a
+                    class="nav-link active"
+                    aria-current="page"
+                    onclick="abrirInicio()"
                     >Inicio</a
-                  >
-                </li>
-                <li class="nav-item mx-2">
-                  <a class="nav-link" href="#">Pagos</a>
-                </li>
-                <li class="nav-item mx-2">
-                  <a onclick="abrirSocios()" class="nav-link" href="#"
-                    >Registros</a
                   >
                 </li>
 
                 <li class="nav-item mx-2">
-                  <a class="nav-link" href="#">Consultas</a>
+                  <div class="dropdown">
+                    <button
+                      class="nav-link btn btn-outline dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Registros
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li class="nav-item mx-2">
+                        <a class="dropdown-item" onclick="abrirSocios()"
+                          >Socios</a
+                        >
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li class="nav-item mx-2">
+                        <a class="dropdown-item" onclick="abrirUsuarios()"
+                          >Usuarios</a
+                        >
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li class="nav-item mx-2">
+                        <a class="dropdown-item" onclick="abrirImplementos()"
+                          >Inventario</a
+                        >
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li class="nav-item mx-2">
+                        <a class="dropdown-item" onclick="abrirParametros()"
+                          >Configuraciones</a
+                        >
+                      </li>
+                      <!-- <li>
+                        <a class="dropdown-item" href="#"
+                          >Something else here</a
+                        >
+                      </li> -->
+                    </ul>
+                  </div>
+                </li>
+
+                <li class="nav-item mx-2">
+                  <a class="nav-link" onclick="abrirPagos()">Pagos</a>
+                </li>
+
+                <li class="nav-item mx-2">
+                  <a class="nav-link" onclick="abrirPlanillas()">Planillas</a>
                 </li>
                 <li class="nav-item mx-2">
-                  <a class="nav-link" href="#">Inventario</a>
+                  <a class="nav-link" onclick="abrirContratos()">Contratos</a>
                 </li>
               </ul>
               <!-- Login/Sign up -->
@@ -209,6 +251,7 @@
                 style="width: 100%"
                 tabindex="-1"
                 aria-hidden="true"
+                id="mySelect"
               >
                 <option selected>Apellidos del socio</option>
                 <option>Alaska</option>
@@ -268,7 +311,6 @@
                   type="checkbox"
                   role="switch"
                   id="flexSwitchCheckDisabled"
-         
                 />
                 <label class="form-check-label" for="flexSwitchCheckDisabled"
                   >Agua Potable</label
@@ -276,19 +318,18 @@
               </div>
             </div>
             <div class="col-3">
-                <div class="form-check form-switch">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="flexSwitchCheckDisabled"
-           
-                  />
-                  <label class="form-check-label" for="flexSwitchCheckDisabled"
-                    >Cobro escrituras</label
-                  >
-                </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckDisabled"
+                />
+                <label class="form-check-label" for="flexSwitchCheckDisabled"
+                  >Cobro escrituras</label
+                >
               </div>
+            </div>
             <!-- <div class="form-check form-switch col-3">
               <input
                 class="form-check-input"
@@ -474,18 +515,18 @@
       </section>
     </dialog>
   </body>
-  <script src="./bootstrap/js/bootstrap.min.js"></script>
-  <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
   <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
   <script src="../../node_modules/select2/dist/js/select2.min.js"></script>
+  <script src="../../node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+  <script src="./bootstrap/js/bootstrap.min.js"></script>
+  <script src="./bootstrap/js/bootstrap.bundle.js"></script>
 
   <script src="./medidores.js" defer></script>
   <script>
-    $(document).ready(function () {
-      $(".select2").select2({
-        closeOnSelect: false,
-      });
-    });
+ 
+
+
   </script>
 </html>
 <style>
