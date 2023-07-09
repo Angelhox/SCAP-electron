@@ -164,6 +164,15 @@ ipcMain.handle("getSocioById", async (event, id) => {
   console.log(result[0]);
   return result[0];
 });
+ipcMain.handle("getContratanteByCedula", async (event, cedula) => {
+  const conn = await getConnection();
+  const result = await conn.query(
+    "Select * from socios where socios.cedula = ?",
+    cedula
+  );
+  console.log(result[0]);
+  return result[0];
+});
 ipcMain.handle("updateSocio", async (event, id, socio) => {
   const conn = await getConnection();
   const result = await conn.query("UPDATE socios set ? where id = ?", [
@@ -239,6 +248,20 @@ ipcMain.handle("getMedidores", async () => {
   console.log(results);
   return results;
 });
+ipcMain.handle("getMedidoresDisponibles", async () => {
+  const conn = await getConnection();
+  const results = conn.query(
+    "Select * from implementos where implementos.nombre='Medidor' and implementos.stock>0 order by id desc;"
+  );
+  console.log(results);
+  return results;
+});
+ipcMain.handle("getMedidorDisponibleById", async (event, id) => {
+  const conn = await getConnection();
+  const result = await conn.query("Select * from implementos where id = ?", id);
+  console.log(result[0]);
+  return result[0];
+});
 ipcMain.handle("createMedidor", async (event, medidor) => {
   try {
     const conn = await getConnection();
@@ -278,7 +301,97 @@ ipcMain.handle("deleteMedidor", async (event, id) => {
   console.log(result);
   return result;
 });
+// Funciones de los contratos
 
+ipcMain.handle("getDatosContratos", async () => {
+  const conn = await getConnection();
+  const results = conn.query(
+    "select contratos.id,contratos.fecha,contratos.pagoEscrituras,contratos.pagoRecoleccionDesechos," +
+      "contratos.pagoAlcanterillado,contratos.pagoAguaPotable,socios.nombre,socios.apellido,socios.cedula from contratos " +
+      "join socios on  socios.id=contratos.sociosId order by contratos.id desc;"
+  );
+  console.log(results);
+  return results;
+});
+ipcMain.handle("createContrato", async (event, contrato) => {
+  try {
+    const conn = await getConnection();
+    console.log("Recibido: ", contrato);
+    //   product.price = parseFloat(product.price);
+    const result = await conn.query("Insert into contratos set ?", contrato);
+    console.log(result);
+    new Notification({
+      title: "Electrom Mysql",
+      body: "New contrato saved succesfully",
+    }).show();
+    contrato.id = result.insertId;
+    return contrato;
+  } catch (error) {
+    console.log(error);
+  }
+});
+// Funciones de las planillas
+ipcMain.handle("createPlanillas", async (event) => {
+  console.log('llegamos al main');
+  let numeroContratos = [];
+  try {
+    const conn = await getConnection();
+    // console.log("Recibido: ", contrato);
+    //   product.price = parseFloat(product.price);
+    // Cuento cuantas planillas debo generar
+    numeroContratos = await conn.query("select * from contratos;");
+    // Recorro un ciclo de acuerdo al numero de contratos
+    console.log('numeroContratos: ',numeroContratos);
+    numeroContratos.forEach(async function (contrato){
+      const planillaDefecto = {
+        fecha:formatearFecha(new Date()) ,
+        valor: 2.0,
+        estado: "Por Cobrar",
+        lecturaAnterior: 0.0,
+        lecturaActual: 0.0,
+        observacion: "NA",
+        contratosId: contrato.id,
+      };
+      const result = await conn.query(
+        "Insert into planillas set ?",
+        planillaDefecto
+      );
+      console.log(result);
+    });
+    new Notification({
+      title: "Electrom Mysql",
+      body: "New planilla genereted succesfully",
+    }).show();
+    contrato.id = result.insertId;
+    return contrato;
+  } catch (error) {
+    console.log(error);
+  }
+});
+ipcMain.handle("getDatosPlanillas", async () => {
+  const conn = await getConnection();
+  const results = conn.query(
+    "select planillas.id,planillas.codigo as codigoPlanilla," +
+      "planillas.fecha,planillas.valor,planillas.estado,planillas.lecturaActual," +
+      "planillas.lecturaAnterior,planillas.observacion," +
+      "contratos.id,contratos.pagoEscrituras,contratos.pagoRecoleccionDesechos," +
+      "contratos.pagoAlcanterillado,contratos.pagoAguaPotable,socios.nombre," +
+      "socios.apellido,socios.cedula,medidores.codigo as codigoMedidor from " +
+      "planillas join contratos on contratos.id= planillas.contratosId join " +
+      "socios on socios.id= contratos.sociosId join medidores " +
+      "on contratos.id=medidores.contratosId;"
+  );
+  console.log(results);
+  return results;
+});
+function formatearFecha(fecha) {
+  const fechaOriginal = new Date(fecha);
+  const year = fechaOriginal.getFullYear();
+  const month = String(fechaOriginal.getMonth() + 1).padStart(2, "0");
+  const day = String(fechaOriginal.getDate()).padStart(2, "0");
+  const fechaFormateada = `${year}-${month}-${day}`;
+  return fechaFormateada;
+}
 module.exports = {
   createWindow,
 };

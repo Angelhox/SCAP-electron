@@ -1,6 +1,9 @@
 const { ipcRenderer } = require("electron");
+const planillaEmision = document.getElementById("fechaEmisionPlanilla");
+const planillaEstado = document.getElementById("estado");
+const socioNombre = document.getElementById("nombrecompleto");
+const socioCedula = document.getElementById("cedula");
 const medidorCodigo = document.getElementById("codigo");
-const medidorInstalacion = document.getElementById("fechaInstalacion");
 const medidorMarca = document.getElementById("marca");
 const medidorBarrio = document.getElementById("barrio");
 const medidorPrincipal = document.getElementById("principal");
@@ -9,11 +12,11 @@ const medidorNumeroCasa = document.getElementById("numerocasa");
 const medidorReferencia = document.getElementById("referencia");
 const medidorObservacion = document.getElementById("observacion");
 
-const medidoresList = document.getElementById("medidores");
-let medidores = [];
+const planillasList = document.getElementById("planillas");
+let planillas = [];
 let editingStatus = false;
 let editMedidorId = "";
-medidorForm.addEventListener("submit", async (e) => {
+planillaForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const newMedidor = {
     codigo: medidorCodigo.value,
@@ -42,29 +45,31 @@ medidorForm.addEventListener("submit", async (e) => {
     editMedidorId = "";
     console.log(result);
   }
-  getMedidores();
-  medidorForm.reset();
+  getPlanillas();
+  planillaForm.reset();
   medidorCodigo.focus();
 });
-function renderMedidores(medidores) {
-  medidoresList.innerHTML = "";
-  medidores.forEach((medidor) => {
-    medidoresList.innerHTML += `
+function renderPlanillas(datosPlanillas) {
+  planillasList.innerHTML = "";
+  datosPlanillas.forEach((datosPlanilla) => {
+    planillasList.innerHTML += `
        <tr>
-       <td>${medidor.codigo}</td>
-      <td>${"socio"}</td>
-      <td>${"socioCedula"}</td>
-      <td>${medidor.fechaInstalacion}</td>
-      <td>${medidor.Barrio}</td>
-      <td>${medidor.callePrincipal + " y " + medidor.calleSecundaria}</td>
- 
+       <td>${datosPlanilla.codigoPlanilla}</td>
+       <td>${datosPlanilla.codigoMedidor}</td>
+       <td>${datosPlanilla.nombre + " " + datosPlanilla.apellido}</td>
+       <td>${datosPlanilla.cedula}</td>
+       <td>${formatearFecha(datosPlanilla.fecha)}</td>
+       <td>${datosPlanilla.valor}</td>
+       <td>${datosPlanilla.estado}</td>
+       <td>${datosPlanilla.lecturaAnterior}</td>
+       <td>${datosPlanilla.lecturaActual}</td> 
       <td>
-      <button onclick="deleteMedidor('${medidor.id}')" class="btn "> 
+      <button onclick="deleteMedidor('${datosPlanilla.id}')" class="btn "> 
       <i class="fa-solid fa-user-minus"></i>
       </button>
       </td>
       <td>
-      <button onclick="editMedidor('${medidor.id}')" class="btn ">
+      <button onclick="editPlanilla('${datosPlanilla.id}')" class="btn ">
       <i class="fa-solid fa-user-pen"></i>
       </button>
       </td>
@@ -94,17 +99,16 @@ const deleteMedidor = async (id) => {
     console.log("id from medidores.js");
     const result = await ipcRenderer.invoke("deleteMedidor", id);
     console.log("Resultado medidores.js", result);
-    getMedidores();
+    getPlanillas();
   }
 };
-const getMedidores = async () => {
-  medidores = await ipcRenderer.invoke("getMedidores");
-  console.log(medidores);
-  renderMedidores(medidores);
+const getPlanillas = async () => {
+  planillas = await ipcRenderer.invoke("getDatosPlanillas");
+  console.log(planillas);
+  renderPlanillas(planillas);
 };
 async function init() {
-
-  await getMedidores();
+  await getPlanillas();
 }
 function formatearFecha(fecha) {
   const fechaOriginal = new Date(fecha);
@@ -114,6 +118,29 @@ function formatearFecha(fecha) {
   const fechaFormateada = `${year}-${month}-${day}`;
   return fechaFormateada;
 }
+// Generar Planillas
+async function generarPlanillas() {
+  const result = await ipcRenderer.invoke("createPlanillas");
+  console.log(result);
+  getPlanillas();
+}
+// Transicion entre las secciones de la vista
+var btnSeccion1 = document.getElementById("btnSeccion1");
+var btnSeccion2 = document.getElementById("btnSeccion2");
+var seccion1 = document.getElementById("seccion1");
+var seccion2 = document.getElementById("seccion2");
+
+btnSeccion1.addEventListener("click", function () {
+  console.log("btn1");
+  seccion1.classList.remove("active");
+  seccion2.classList.add("active");
+});
+
+btnSeccion2.addEventListener("click", function () {
+  console.log("btn2");
+  seccion2.classList.remove("active");
+  seccion1.classList.add("active");
+});
 // funciones del navbar
 const abrirInicio = async () => {
   const url = "src/ui/principal.html";

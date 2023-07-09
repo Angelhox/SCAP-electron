@@ -1,5 +1,13 @@
 const { ipcRenderer } = require("electron");
-
+const socioContratanteCedula = document.getElementById(
+  "cedulaSocioContratante"
+);
+const socioContratanteNombre = document.getElementById(
+  "nombreSocioContratante"
+);
+const socioContratanteApellido = document.getElementById(
+  "apellidoSocioContratante"
+);
 const medidorCodigo = document.getElementById("codigo");
 const medidorInstalacion = document.getElementById("fechaInstalacion");
 const medidorMarca = document.getElementById("marca");
@@ -9,63 +17,123 @@ const medidorSecundaria = document.getElementById("secundaria");
 const medidorNumeroCasa = document.getElementById("numerocasa");
 const medidorReferencia = document.getElementById("referencia");
 const medidorObservacion = document.getElementById("observacion");
-
-const medidoresList = document.getElementById("medidores");
+const medidorDescripcion = document.getElementById("descripcion");
+const medidoresDisponiblesSelect = document.getElementById(
+  "medidoresDisponibles"
+);
+const contratoFecha = document.getElementById("fechaContrato");
+const contratoPagoEscrituras = document.getElementById("servicioEscrituras");
+const contratoPagoRecoleccion = document.getElementById("servicioRecoleccion");
+const contratoPagoAguaPotable = document.getElementById("servicioAguaPotable");
+const contratoPagoAlcanterillado = document.getElementById(
+  "servicioAlcanterillado"
+);
+const contratosList = document.getElementById("contratos");
+const medidoresDisponiblesList = document.getElementById(
+  "medidoresDisponibles"
+);
 let medidores = [];
+let medidoresDisponibles = [];
+let cedulasSugerencias = [];
 let editingStatus = false;
 let editMedidorId = "";
-medidorForm.addEventListener("submit", async (e) => {
+let socioContratanteId = "";
+let contratoId = "";
+contratoForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const newMedidor = {
-    codigo: medidorCodigo.value,
-    fechaInstalacion: medidorInstalacion.value,
-    marca: medidorMarca.value,
-    barrio: medidorBarrio.value,
-    callePrincipal: medidorPrincipal.value,
-    calleSecundaria: medidorSecundaria.value,
-    numeroCasa: medidorNumeroCasa.value,
-    referencia: medidorReferencia.value,
-    observacion: medidorObservacion.value,
-    // Obtenemos el id del socio
-    inventarioId: 1,
-  };
-  if (!editingStatus) {
-    const result = await ipcRenderer.invoke("createMedidor", newMedidor);
-    console.log(result);
-  } else {
-    console.log("Editing implemento with electron");
-    const result = await ipcRenderer.invoke(
-      "updateMedidor",
-      editMedidorId,
-      newMedidor
-    );
-    editingStatus = false;
-    editMedidorId = "";
-    console.log(result);
+  if (!socioContratanteId == "") {
+    const newMedidor = {
+      codigo: medidorCodigo.value,
+      fechaInstalacion: medidorInstalacion.value,
+      marca: medidorMarca.value,
+      barrio: medidorBarrio.value,
+      callePrincipal: medidorPrincipal.value,
+      calleSecundaria: medidorSecundaria.value,
+      numeroCasa: medidorNumeroCasa.value,
+      referencia: medidorReferencia.value,
+      observacion: medidorObservacion.value,
+      contratosId: contratoId,
+    };
+    var pagoAguaPotable="No";
+    var pagoEscrituras = "No";
+    var pagoDesechos = "No";
+    var pagoAlcanterillado = "No";
+
+    if (contratoPagoEscrituras.checked) {
+      pagoEscrituras = "Si";
+    }
+    if (contratoPagoRecoleccion.checked) {
+      pagoDesechos = "Si";
+    }
+    if (contratoPagoAlcanterillado.checked) {
+      pagoAlcanterillado = "Si";
+    }
+    if (contratoPagoAguaPotable.checked) {
+      pagoAguaPotable = "Si";
+    }
+    const newContrato = {
+      fecha: contratoFecha.value,
+      pagoEscrituras: pagoEscrituras,
+      pagoRecoleccionDesechos: pagoDesechos,
+      pagoAlcanterillado: pagoAlcanterillado,
+      pagoAguaPotable: pagoAguaPotable,
+      sociosId: socioContratanteId,
+    };
+
+    if (!editingStatus) {
+      const resultContrato = await ipcRenderer.invoke(
+        "createContrato",
+        newContrato
+      );
+      console.log("Muestro resultado de insertar contrato: ", resultContrato);
+      try{
+      contratoId = resultContrato.id;
+      console.log("Muestro id resultado de insertar contrato: ", contratoId);
+      if (!contratoId == "") {
+        if (contratoPagoAguaPotable.checked) {
+          newMedidor.contratosId = contratoId;
+          const result = await ipcRenderer.invoke("createMedidor", newMedidor);
+          console.log(result);
+        }
+      }
+    }catch(e){
+      console.log('Ha ocurrido un error posiblemente el contrato no registre un medidor',e);
+    }
+    } else {
+      console.log("Editing contrato with electron");
+      const result = await ipcRenderer.invoke(
+        "updateMedidor",
+        editMedidorId,
+        newMedidor
+      );
+      editingStatus = false;
+      editMedidorId = "";
+      console.log(result);
+    }
+    getContratos();
+    contratoForm.reset();
+    socioContratanteCedula.focus();
   }
-  getMedidores();
-  medidorForm.reset();
-  medidorCodigo.focus();
 });
-function renderMedidores(medidores) {
-  medidoresList.innerHTML = "";
-  medidores.forEach((medidor) => {
-    medidoresList.innerHTML += `
+function renderContratos(datosContratos) {
+ contratosList.innerHTML = "";
+  datosContratos.forEach((contrato) => {
+    contratosList.innerHTML += `
        <tr>
-       <td>${medidor.codigo}</td>
-      <td>${"socio"}</td>
-      <td>${"socioCedula"}</td>
-      <td>${medidor.fechaInstalacion}</td>
-      <td>${medidor.Barrio}</td>
-      <td>${medidor.callePrincipal + " y " + medidor.calleSecundaria}</td>
- 
+       <td>${formatearFecha(contrato.fecha)}</td>
+      <td>${contrato.nombre+" "+contrato.apellido}</td>
+      <td>${contrato.cedula}</td>
+      <td>${contrato.pagoAlcanterillado}</td>
+      <td>${contrato.pagoRecoleccionDesechos}</td>
+      <td>${contrato.pagoEscrituras}</td>
+      <td>${contrato.pagoAguaPotable}</td>
       <td>
-      <button onclick="deleteMedidor('${medidor.id}')" class="btn "> 
+      <button onclick="deleteMedidor('${contrato.id}')" class="btn "> 
       <i class="fa-solid fa-user-minus"></i>
       </button>
       </td>
       <td>
-      <button onclick="editMedidor('${medidor.id}')" class="btn ">
+      <button onclick="editMedidor('${contrato.id}')" class="btn ">
       <i class="fa-solid fa-user-pen"></i>
       </button>
       </td>
@@ -95,16 +163,17 @@ const deleteMedidor = async (id) => {
     console.log("id from medidores.js");
     const result = await ipcRenderer.invoke("deleteMedidor", id);
     console.log("Resultado medidores.js", result);
-    getMedidores();
+    getContratos();
   }
 };
-const getMedidores = async () => {
-  medidores = await ipcRenderer.invoke("getMedidores");
-  console.log(medidores);
-  renderMedidores(medidores);
+const getContratos = async () => {
+  datosContratos = await ipcRenderer.invoke("getDatosContratos");
+  console.log(datosContratos);
+  renderContratos(datosContratos);
 };
 async function init() {
-  await getMedidores();
+  await getContratos();
+  await getMedidoresDisponibles();
 }
 function formatearFecha(fecha) {
   const fechaOriginal = new Date(fecha);
@@ -114,6 +183,173 @@ function formatearFecha(fecha) {
   const fechaFormateada = `${year}-${month}-${day}`;
   return fechaFormateada;
 }
+// Cargar los medidores disponibles
+const getMedidoresDisponibles = async () => {
+  medidoresDisponibles = await ipcRenderer.invoke("getMedidoresDisponibles");
+  console.log(medidoresDisponibles);
+  renderMedidoresDisponibles(medidoresDisponibles);
+};
+// function renderMedidoresDisponibles(medidoresDisponibles) {
+//   medidoresDisponiblesList.innerHTML = "";
+//   medidoresDisponibles.forEach((medidorDisponible) => {
+//     medidoresDisponiblesList.innerHTML += `
+//     <option onchange="cargarDatosMedidor('${medidorDisponible.id}')"  value="${medidorDisponible.id}">${medidorDisponible.nombre+' '+medidorDisponible.marca+' '+'('+medidorDisponible.stock+')'}</option>
+//       `;
+//   });
+// }
+function renderMedidoresDisponibles(medidoresDisponibles) {
+  medidoresDisponiblesList.innerHTML = "";
+
+  medidoresDisponibles.forEach((medidorDisponible) => {
+    var option = document.createElement("option");
+    option.value = medidorDisponible.id;
+    option.textContent =
+      medidorDisponible.nombre +
+      " " +
+      medidorDisponible.marca +
+      " (" +
+      medidorDisponible.stock +
+      ")";
+    medidoresDisponiblesList.appendChild(option);
+  });
+
+  medidoresDisponiblesList.onchange = function () {
+    var selectedOption =
+      medidoresDisponiblesList.options[medidoresDisponiblesList.selectedIndex];
+    var selectedId = selectedOption.value;
+    console.log("Id from onchange", selectedId);
+    cargarDatosMedidor(selectedId);
+  };
+  medidoresDisponiblesList.onclick = function () {
+    var selectedOption =
+      medidoresDisponiblesList.options[medidoresDisponiblesList.selectedIndex];
+    var selectedId = selectedOption.value;
+    console.log("Id from onchange", selectedId);
+    cargarDatosMedidor(selectedId);
+  };
+}
+const cargarDatosMedidor = async (id) => {
+  console.log("Se llamo a la carga de datos del medidor", id);
+  const medidorDisponible = await ipcRenderer.invoke(
+    "getMedidorDisponibleById",
+    id
+  );
+  medidorDescripcion.value = medidorDisponible.descripcion;
+  medidorMarca.value = medidorDisponible.marca;
+  console.log(medidorDisponible);
+};
+// Cargar datos de los socios registrados
+
+var inputSugerencias = document.getElementById("cedulaSocioContratante");
+var listaSugerencias = document.getElementById("lista-sugerencias");
+var sugerencias = [];
+
+// Obtener las sugerencias desde la base de datos
+async function obtenerSugerencias() {
+  try {
+    var cedulasSugerencias = await ipcRenderer.invoke("getSocios");
+    sugerencias = cedulasSugerencias.map(function (objeto) {
+      return objeto.cedula;
+    });
+  } catch (error) {
+    console.error("Error al obtener las sugerencias:", error);
+  }
+}
+
+inputSugerencias.addEventListener("input", function () {
+  var textoIngresado = inputSugerencias.value;
+  var sugerenciasFiltradas = sugerencias.filter(function (sugerencia) {
+    return sugerencia.startsWith(textoIngresado);
+  });
+
+  mostrarSugerencias(sugerenciasFiltradas);
+});
+
+function mostrarSugerencias(sugerencias) {
+  listaSugerencias.innerHTML = "";
+  sugerencias.forEach(function (sugerencia) {
+    var li = document.createElement("li");
+
+    li.textContent = sugerencia;
+    li.addEventListener("click", function () {
+      inputSugerencias.value = sugerencia;
+      obtenerDatosSocioContratante(sugerencia);
+      listaSugerencias.innerHTML = "";
+    });
+
+    li.style.padding = "8px";
+    li.style.cursor = "pointer";
+    li.style.listStyle = "none";
+    listaSugerencias.appendChild(li);
+  });
+}
+
+// Obtener las sugerencias desde la base de datos al cargar la página
+document.addEventListener("DOMContentLoaded", function () {
+  obtenerSugerencias()
+    .then(function () {
+      console.log("Sugerencias obtenidas:", sugerencias);
+    })
+    .catch(function (error) {
+      console.error("Error al obtener las sugerencias:", error);
+    });
+});
+const obtenerDatosSocioContratante = async (cedula) => {
+  console.log("Se llamo a la carga de datos del contratante", cedula);
+  const socioContratante = await ipcRenderer.invoke(
+    "getContratanteByCedula",
+    cedula
+  );
+  socioContratanteNombre.value = socioContratante.nombre;
+  socioContratanteApellido.value = socioContratante.apellido;
+  socioContratanteId = socioContratante.id;
+  console.log(socioContratante);
+};
+// Habilitar o desabilitar el formulario del
+//medidor en funcion de si el socio solicita el servicio de agua potable
+function habilitarFormMedidor() {
+  if (contratoPagoAguaPotable.checked) {
+    fechaInstalacion.disabled = false;
+    medidoresDisponiblesSelect.disabled = false;
+    medidorCodigo.disabled = false;
+    medidorMarca.disabled = false;
+    medidorDescripcion.disabled = false;
+    (medidorNumeroCasa.disabled = false), (medidorBarrio.disabled = false);
+    medidorPrincipal.disabled = false;
+    medidorSecundaria.disabled = false;
+    medidorReferencia.disabled = false;
+    medidorObservacion.disabled = false;
+  } else {
+    fechaInstalacion.disabled = true;
+    medidoresDisponiblesSelect.disabled = true;
+    medidorCodigo.disabled = true;
+    medidorMarca.disabled = true;
+    medidorDescripcion.disabled = true;
+    (medidorNumeroCasa.disabled = true), (medidorBarrio.disabled = true);
+    medidorPrincipal.disabled = true;
+    medidorSecundaria.disabled = true;
+    medidorReferencia.disabled = true;
+    medidorObservacion.disabled = true;
+  }
+}
+// Transicion entre las secciones de la vista
+var btnSeccion1 = document.getElementById('btnSeccion1');
+var btnSeccion2 = document.getElementById('btnSeccion2');
+var seccion1 = document.getElementById('seccion1');
+var seccion2 = document.getElementById('seccion2');
+
+btnSeccion1.addEventListener('click', function() {
+  console.log('btn1');
+  seccion1.classList.remove('active');
+  seccion2.classList.add('active');
+});
+
+btnSeccion2.addEventListener('click', function() {
+  console.log('btn2');
+  seccion2.classList.remove('active');
+  seccion1.classList.add('active');
+});
+
 // funciones del navbar
 const abrirInicio = async () => {
   const url = "src/ui/principal.html";
@@ -152,9 +388,5 @@ function mostrarLogin() {
   const dialog = document.getElementById("loginDialog");
   dialog.showModal();
 }
-$(document).ready(function() {
-  $('.select2').select2({
-  closeOnSelect: false
-});
-});
+
 init();

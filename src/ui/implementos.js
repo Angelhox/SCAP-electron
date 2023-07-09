@@ -1,6 +1,6 @@
 const { ipcRenderer } = require("electron");
 const implementoNombre = document.getElementById("implemento");
-const implementoTipo = document.getElementById("tipo");
+const implementoMarca = document.getElementById("marca");
 const implementoDescripcion = document.getElementById("descripcion");
 const implementoStock = document.getElementById("stock");
 const implementoPrecio = document.getElementById("precio");
@@ -14,7 +14,7 @@ implementoForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const newImplemento = {
     nombre: implementoNombre.value,
-    tipo: implementoTipo.value,
+    marca: implementoMarca.value,
     descripcion: implementoDescripcion.value,
     stock: implementoStock.value,
     precio: implementoPrecio.value,
@@ -46,7 +46,7 @@ function renderImplementos(implementos) {
        <tr>
        <td>${implemento.id}</td>
       <td>${implemento.nombre}</td>
-      <td>${implemento.tipo}</td>
+      <td>${implemento.marca}</td>
       <td>${implemento.descripcion}</td>
       <td>${implemento.stock}</td>
       <td>${implemento.precio}</td>
@@ -69,7 +69,7 @@ function renderImplementos(implementos) {
 const editImplemento = async (id) => {
   const implemento = await ipcRenderer.invoke("getImplementoById", id);
  implementoNombre.value=implemento.nombre;
- implementoTipo.value=implemento.tipo;
+ implementoMarca.value=implemento.marca;
  implementoDescripcion.value=implemento.descripcion;
  implementoStock.value=implemento.stock;
  implementoPrecio.value=implemento.precio;

@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="./principal.css" />
     <link
@@ -29,7 +30,13 @@
       rel="stylesheet"
       href="../../node_modules/bootstrap/dist/css/bootstrap.min.css"
     />
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
+      integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <title>Instalaciones</title>
   </head>
   <body class="vh-100 overflow-hidden body">
@@ -158,179 +165,189 @@
       </nav>
     </header>
 
-    <div class="row container-fluid" style="padding-top: 150px">
-      <div class="col-12">
-        <p class="text-white fs-5">Inicio/Registros/Implementos</p>
-      </div>
-      <div
-        class="col-lg-6 col-md-6 col-sm-12"
-        style="
-          height: 60vh;
-          overflow-y: auto;
-          overflow-x: auto;
-          padding: 10px;
-          display: none;
-        "
-      >
-        <!-- Tabla de listado de usuarios -->
-        <div style="width: 100%; height: 100%">
-          <table class="table">
-            <thead class="table-dark">
-              <tr>
-                <th colspan="9" class="text-center fs-4">
-                  Listado de medidores en fucionamiento
-                  <i class="fa-solid fa-user-tie"></i>
-                </th>
-              </tr>
-              <tr>
-                <th>Codigo</th>
-                <th>Socio</th>
-                <th>Cédula</th>
-
-                <th>Ubicacion</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="medidores">
-              <tr>
-                <td>100200300</td>
-                <td>Mario Salinas Fuentes</td>
-                <td>1725674829</td>
-
-                <td>calle principal y secundaria</td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="row container-fluid" >
+      <section class="container-fluid active" style="padding-top: 150px" id="seccion1">
+        <div class="col-12 d-flex justify-content-end">
+          <button class="btn btn-success" id="btnSeccion1">Nuevo contrato</button>
         </div>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top: 10px">
-        <form class="form-horizontal" id="medidorForm">
-          <div class="row">
-            <div class="col-12 text-white text-center fs-4">
-              Datos del contrato
-            </div>
-            <div class="col-3">
-              <label class="text-white">Fecha del contrato</label>
-              <input
-                type="date"
-                class="form-control my-2"
-                placeholder="Fecha de Instalación"
-                id="fechaInstalacion"
-              />
-            </div>
-            <div class="col-12 text-white justify-content-start fs-4">
-              Datos del socio contratante
-            </div>
-            <div class="col-3 my-2">
-              <!-- <div class="form-group">
-                  <label>Multiple</label> -->
-              <select
-                class="form-control select2 select2-hidden-accessible"
-                data-placeholder="Select a State"
-                style="width: 100%"
-                tabindex="-1"
-                aria-hidden="true"
-              >
-                <option selected>Cédula del socio</option>
-                <option>Alaska</option>
-                <option>California</option>
-                <option>Delaware</option>
-                <option>Tennessee</option>
-                <option>Texas</option>
-                <option>Washington</option>
-              </select>
-              <!-- </div> -->
-            </div>
-            <div class="col-3 my-2">
-              <!-- <div class="form-group">
-                    <label>Multiple</label> -->
-              <select
-                class="form-control select2 select2-hidden-accessible"
-                data-placeholder="Select a State"
-                style="width: 100%"
-                tabindex="-1"
-                aria-hidden="true"
-                id="mySelect"
-              >
-                <option selected>Apellidos del socio</option>
-                <option>Alaska</option>
-                <option>California</option>
-                <option>Delaware</option>
-                <option>Tennessee</option>
-                <option>Texas</option>
-                <option>Washington</option>
-              </select>
-              <!-- </div> -->
-            </div>
-            <div class="col-3">
-              <input
-                type="text"
-                class="form-control my-2"
-                placeholder="Nombres del socio"
-                id="nombresocio"
-              />
-            </div>
-            <div class="col-3 d-flex justify-content-end my-2">
-              <button class="btn btn-primary mx-2 rounded-2">
-                Administrar socios
-              </button>
-            </div>
-            <div class="col-12 text-white fs-4">Servicios del contrato</div>
-            <div class="col-3">
-              <div class="form-check form-switch">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckDefault"
-                />
-                <label class="form-check-label" for="flexSwitchCheckDefault"
-                  >Recolección de desechos</label
-                >
+        <!-- <div class="col-12">
+          <p class="text-white fs-5">Inicio/Registros/Implementos</p>
+        </div> -->
+        <div
+          class="col-lg-12 col-md-12 col-sm-12 my-2"
+          style="
+            height: 80vh;
+            overflow-y: auto;
+            overflow-x: auto;
+            /* padding: 10px; */
+            display: block;
+          "
+        >
+          <!-- Tabla de listado de usuarios -->
+          <div style="width: 100%; height: 100%">
+            <table class="table">
+              <thead class="table-dark">
+                <tr>
+                  <th colspan="9" class="text-center fs-4">
+                    Listado de medidores en fucionamiento
+                    <i class="fa-solid fa-user-tie"></i>
+                  </th>
+                </tr>
+                <tr>
+                  <th>Fecha Contrato</th>
+                  <th>Socio</th>
+                  <th>Cédula</th>
+                  <th>Alcanterillado</th>
+                  <th>Recoleccion de Desechos</th>
+                  <th>Pago Escrituras</th>            
+                  <th>Pago Agua Potable</th>            
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="contratos">
+                <tr>
+                  <td>100200300</td>
+                  <td>Mario Salinas Fuentes</td>
+                  <td>1725674829</td>
+
+                  <td>calle principal y secundaria</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <section class="container-fluid" style="padding-top: 150px" id="seccion2">
+        <div class="col-12 d-flex justify-content-end">
+          <button class="btn btn-success" id="btnSeccion2">Lista de contratos</button>
+        </div>
+        <div
+          class="col-lg-12 col-md-12 col-sm-12"
+          style="padding-top: 10px; display: block"
+        >
+          <form class="form-horizontal" id="contratoForm">
+            <div class="row">
+              <div class="col-12 text-white text-center fs-4">
+                Datos del contrato
               </div>
-            </div>
-            <div class="col-3">
-              <div class="form-check form-switch">
+              <div class="col-3">
+                <label class="text-white">Fecha del contrato</label>
                 <input
-                  class="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckChecked"
-                  checked
+                  type="date"
+                  class="form-control my-2"
+                  placeholder="Fecha de Instalación"
+                  id="fechaContrato"
                 />
-                <label class="form-check-label" for="flexSwitchCheckChecked"
-                  >Alcanterillado</label
-                >
               </div>
-            </div>
-            <div class="col-3">
-              <div class="form-check form-switch">
+              <div class="col-12 text-white justify-content-start fs-4">
+                Datos del socio contratante
+              </div>
+              <div class="col-3 my-2">
                 <input
-                  class="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckDisabled"
+                  type="text"
+                  id="cedulaSocioContratante"
+                  placeholder="Cédula del socio"
+                  class="form-control"
                 />
-                <label class="form-check-label" for="flexSwitchCheckDisabled"
-                  >Agua Potable</label
-                >
+                <div id="contenedor-sugerencias">
+                  <ul
+                    id="lista-sugerencias"
+                    style="width: 100%; border: none"
+                  ></ul>
+                </div>
               </div>
-            </div>
-            <div class="col-3">
-              <div class="form-check form-switch">
+              <div class="col-3 my-2">
+                <!-- <select id="normalize">
+                <option value=""></option>
+                <option value="1">Awesome</option>
+                <option value="2">Beast</option>
+                <option value="3">Compatible</option>
+                <option value="4">Thomas Edison</option>
+                <option value="5">Nikola</option>
+                <option value="6">Selectize</option>
+                <option value="7">Javascript</option>
+              </select> -->
+
                 <input
-                  class="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckDisabled"
+                  type="text"
+                  id="apellidoSocioContratante"
+                  placeholder="Apellidos del socio"
+                  class="form-control"
                 />
-                <label class="form-check-label" for="flexSwitchCheckDisabled"
-                  >Cobro escrituras</label
-                >
+                <!-- <div
+                id="suggestion-list2"
+                style="width: 100%; border: none"
+              ></div> -->
               </div>
-            </div>
-            <!-- <div class="form-check form-switch col-3">
+              <div class="col-3">
+                <input
+                  type="text"
+                  class="form-control my-2"
+                  placeholder="Nombres del socio"
+                  id="nombreSocioContratante"
+                />
+              </div>
+              <div class="col-3 d-flex justify-content-end my-2">
+                <button class="btn btn-primary mx-2 rounded-2">
+                  Administrar socios
+                </button>
+              </div>
+              <div class="col-12 text-white fs-4">Servicios del contrato</div>
+              <div class="col-3">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="servicioRecoleccion"
+                  />
+                  <label class="form-check-label" for="flexSwitchCheckDefault"
+                    >Recolección de desechos</label
+                  >
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="servicioAlcanterillado"
+                  />
+                  <label class="form-check-label" for="flexSwitchCheckChecked"
+                    >Alcanterillado</label
+                  >
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="servicioAguaPotable"
+                    onchange="habilitarFormMedidor()"
+                  />
+                  <label class="form-check-label" for="flexSwitchCheckDisabled"
+                    >Agua Potable</label
+                  >
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="servicioEscrituras"
+                  />
+                  <label class="form-check-label" for="flexSwitchCheckDisabled"
+                    >Cobro escrituras</label
+                  >
+                </div>
+              </div>
+              <!-- <div class="form-check form-switch col-3">
               <input
                 class="form-check-input"
                 type="checkbox"
@@ -345,121 +362,134 @@
                 >Disabled checked switch checkbox input</label
               >
             </div> -->
-            <div class="col-12 text-white fs-4">Contrato con medidor</div>
-            <!-- Select con la lista de medidores disponible -->
+              <div class="col-12 text-white fs-4">Contrato con medidor</div>
+              <!-- Select con la lista de medidores disponible -->
 
-            <div class="col-3">
-              <label class="text-white">Fecha de instalación</label>
-              <input
-                type="date"
-                class="form-control my-2"
-                placeholder="Fecha de Instalación"
-                id="fechaInstalacion"
-              />
-            </div>
-            <div class="col-3">
-              <label class="text-white">Selecciona un medidor disponible</label>
-              <select
-                class="form-control my-2"
-                aria-label="Default select example"
-              >
-                <option selected>Selecciona un medidor</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
-            </div>
+              <div class="col-3">
+                <label class="text-white">Fecha de instalación</label>
+                <input
+                  type="date"
+                  class="form-control my-2"
+                  placeholder="Fecha de Instalación"
+                  id="fechaInstalacion"
+                  disabled
+                />
+              </div>
+              <div class="col-3">
+                <label class="text-white"
+                  >Selecciona un medidor disponible</label
+                >
+                <select
+                  class="form-control my-2"
+                  aria-label="Default select example"
+                  id="medidoresDisponibles"
+                  disabled
+                >
+                  <option value="1">Selecciona un medidor1</option>
+                </select>
+              </div>
 
-            <div class="col-3 d-flex align-items-end">
-              <input
-                type="text"
-                class="form-control my-2"
-                placeholder="Código del medidor"
-                id="codigo"
-              />
-            </div>
-            <div class="col-3 d-flex align-items-end">
-              <input
-                type="text"
-                class="form-control my-2"
-                placeholder="Marca"
-                id="marca"
-              />
-            </div>
-            <div class="col-6">
-              <input
-                type="text"
-                class="form-control my-2"
-                placeholder="Descripcion del medidor"
-                id="descripcion"
-              />
-            </div>
+              <div class="col-3 d-flex align-items-end">
+                <input
+                  type="text"
+                  class="form-control my-2"
+                  placeholder="Código del medidor"
+                  id="codigo"
+                  disabled
+                />
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <input
+                  type="text"
+                  class="form-control my-2"
+                  placeholder="Marca"
+                  id="marca"
+                  disabled
+                />
+              </div>
+              <div class="col-6">
+                <input
+                  type="text"
+                  class="form-control my-2"
+                  placeholder="Descripcion del medidor"
+                  id="descripcion"
+                  disabled
+                />
+              </div>
 
-            <div class="col-12 text-white text-center fs-4">
-              Ubicacion del nuevo medidor
-            </div>
-            <div class="col-4">
-              <input
-                type="text"
-                step="any"
-                class="form-control my-2"
-                placeholder="Numero de casa"
-                id="numerocasa"
-              />
-            </div>
-            <div class="col-4">
-              <input
-                type="text"
-                step="any"
-                class="form-control my-2"
-                placeholder="Barrio"
-                id="barrio"
-              />
-            </div>
-            <div class="col-4">
-              <input
-                type="text"
-                step="any"
-                class="form-control my-2"
-                placeholder="Calle principal"
-                id="principal"
-              />
-            </div>
-            <div class="col-4">
-              <input
-                type="text"
-                step="any"
-                class="form-control my-2"
-                placeholder="Calle secundaria"
-                id="secundaria"
-              />
-            </div>
-            <div class="col-6">
-              <input
-                type="text"
-                step="any"
-                class="form-control my-2"
-                placeholder="Referencia"
-                id="referencia"
-              />
-            </div>
-            <div class="col-6">
-              <input
-                type="text"
-                step="any"
-                class="form-control my-2"
-                placeholder="Observacion"
-                id="observacion"
-              />
-            </div>
+              <div class="col-12 text-white text-center fs-4">
+                Ubicacion del nuevo medidor
+              </div>
 
-            <div class="col-12 d-flex justify-content-end">
-              <button class="btn btn-primary mx-2 rounded-2">Guardar</button>
-              <button class="btn btn-danger rounded-2">Cancelar</button>
+              <div class="col-4">
+                <input
+                  type="text"
+                  step="any"
+                  class="form-control my-2"
+                  placeholder="Numero de casa"
+                  id="numerocasa"
+                  disabled
+                />
+              </div>
+              <div class="col-4">
+                <input
+                  type="text"
+                  step="any"
+                  class="form-control my-2"
+                  placeholder="Barrio"
+                  id="barrio"
+                  disabled
+                />
+              </div>
+              <div class="col-4">
+                <input
+                  type="text"
+                  step="any"
+                  class="form-control my-2"
+                  placeholder="Calle principal"
+                  id="principal"
+                  disabled
+                />
+              </div>
+              <div class="col-4">
+                <input
+                  type="text"
+                  step="any"
+                  class="form-control my-2"
+                  placeholder="Calle secundaria"
+                  id="secundaria"
+                  disabled
+                />
+              </div>
+              <div class="col-6">
+                <input
+                  type="text"
+                  step="any"
+                  class="form-control my-2"
+                  placeholder="Referencia"
+                  id="referencia"
+                  disabled
+                />
+              </div>
+              <div class="col-6">
+                <input
+                  type="text"
+                  step="any"
+                  class="form-control my-2"
+                  placeholder="Observacion"
+                  id="observacion"
+                  disabled
+                />
+              </div>
+
+              <div class="col-12 d-flex justify-content-end">
+                <button class="btn btn-primary mx-2 rounded-2">Guardar</button>
+                <button class="btn btn-danger rounded-2">Cancelar</button>
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      </section>
     </div>
 
     <dialog
@@ -515,7 +545,22 @@
       </section>
     </dialog>
   </body>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+    integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script>
+    // $(document).ready(function () {
+    //   $(".select2").select2({
+    //     closeOnSelect: false,
+    //   });
+    // });
+    // document.getElementById("#normalize").selectize();
+  </script>
   <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
   <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
   <script src="../../node_modules/select2/dist/js/select2.min.js"></script>
   <script src="../../node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
@@ -523,16 +568,39 @@
   <script src="./bootstrap/js/bootstrap.bundle.js"></script>
 
   <script src="./medidores.js" defer></script>
-  <script>
- 
-
-
-  </script>
 </html>
 <style>
   body {
     background: #eee;
   }
+  section {
+    height: 100vh;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  section.active {
+    display: block;
+    opacity: 1;
+  }
+  #contenedor-sugerencias {
+    position: relative;
+    width: 100%;
+  }
+
+  #lista-sugerencias {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    z-index: 1;
+    background-color: #00000000;
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
   .form-control {
     border-radius: 0;
     box-shadow: none;

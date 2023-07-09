@@ -160,55 +160,84 @@
 
     <div
       class="row container-fluid"
-      style="padding-top: 150px; height: 100%; overflow-y: auto"
+      style=" height: 100%; "
     >
-      <!-- <div class="col-12">
+      <section
+        class="container-fluid active"
+        style="padding-top: 150px"
+        id="seccion1"
+      >
+        <div class="col-12 d-flex justify-content-end">
+          <button class="btn btn-success mx-2" id="btnSeccion1">
+            Administrar Planillas
+          </button>
+          <button class="btn btn-success " onclick="generarPlanillas()" id="btnGenerarPlanillas">
+            Generar Planillas
+          </button>
+        </div>
+        <!-- <div class="col-12">
         <p class="text-white fs-5">Inicio/Registros/Planillas</p>
       </div> -->
-      <div
-        class="col-lg-6 col-md-6 col-sm-12"
-        style="
-          height: 60vh;
-          overflow-y: auto;
-          overflow-x: auto;
-          padding: 10px;
-          display: none;
-        "
-      >
-        <!-- Tabla de listado de usuarios -->
-        <div style="width: 100%; height: 100%">
-          <table class="table">
-            <thead class="table-dark">
-              <tr>
-                <th colspan="9" class="text-center fs-4">
-                  Listado de medidores en fucionamiento
-                  <i class="fa-solid fa-user-tie"></i>
-                </th>
-              </tr>
-              <tr>
-                <th>Codigo</th>
-                <th>Socio</th>
-                <th>Cédula</th>
-
-                <th>Ubicacion</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="medidores">
-              <tr>
-                <td>100200300</td>
-                <td>Mario Salinas Fuentes</td>
-                <td>1725674829</td>
-
-                <td>calle principal y secundaria</td>
-              </tr>
-            </tbody>
-          </table>
+        <div
+          class="col-lg-12 col-md-12 col-sm-12 my-2"
+          style="
+            height: 80vh;
+            overflow-y: auto;
+            overflow-x: auto;
+  
+      
+          "
+        >
+          <!-- Tabla de listado de usuarios -->
+          <div style="width: 100%; height: 100%">
+            <table class="table">
+              <thead class="table-dark">
+                <tr>
+                  <th colspan="11" class="text-center fs-4">
+                    Listado de Planillas
+                    <i class="fa-solid fa-user-tie"></i>
+                  </th>
+                </tr>
+                <tr>
+                  <th>Planilla</th>
+                  <th>Medidor</th>
+                  <th>Socio</th>
+                  <th>Cedula</th>
+                  <th>Fecha</th>
+                  <th>Valor</th>
+                  <th>Estado</th>
+                  <th>Lectura anterior</th>
+                  <th>Lectura actual</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="planillas">
+                <tr>
+                  <td>100200300</td>
+                  <td>100200500</td>
+                  <td>Mario Salinas Fuentes</td>
+                  <td>1725674829</td>
+                  <td>2023-12-11</td>
+                  <td>20.30</td>
+                  <td>Cancelada</td>
+                  <td>0000000147.5</td>
+                  <td>0000000160.9</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top: 10px">
-        <form class="form-horizontal" id="medidorForm">
+      </section>
+      <section class="container-fluid" style="padding-top: 150px" id="seccion2">
+        <div class="col-12 d-flex justify-content-end">
+          <button class="btn btn-success" id="btnSeccion2">Lista de Planillas</button>
+        </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" 
+      style="
+      /* padding-top: 10px */
+      ">
+        <form class="form-horizontal" id="planillaForm">
           <div class="row">
             <div class="col-12 text-white text-center fs-4">
               Datos del contrato
@@ -218,8 +247,8 @@
               <input
                 type="date"
                 class="form-control my-2"
-                placeholder="Fecha de Instalación"
-                id="fechaInstalacion"
+                placeholder="Fecha de Emision"
+                id="fechaEmisionPlanilla"
               />
             </div>
             <div class="col-12 text-white justify-content-start fs-4">
@@ -227,7 +256,7 @@
             </div>
             <div class="col-2">
               <input
-                type="text"
+                type="number"
                 class="form-control my-2"
                 placeholder="Cedula"
                 id="cedula"
@@ -246,18 +275,18 @@
               <input
                 type="text"
                 class="form-control my-2"
-                placeholder="Dirección"
-                id="direccion"
+                placeholder="Estado"
+                id="estado"
               />
             </div>
-            <div class="col-2">
+            <!-- <div class="col-2">
               <input
                 type="text"
                 class="form-control my-2"
                 placeholder="Teléfono"
                 id="telefono"
               />
-            </div>
+            </div> -->
             <div class="col-2 d-flex justify-content-end my-2">
               <button class="btn btn-primary mx-2 rounded-2">
                 Administrar socios
@@ -465,20 +494,20 @@
               <div class="row">
                 <div class="col-6">
                   <input
-                    type="text"
+                    type="number"
                     step="any"
                     class="form-control my-2"
                     placeholder="Lectura Anterior"
-                    id="secundaria"
+                    id="lecturaAnterior"
                   />
                 </div>
                 <div class="col-6">
                   <input
-                    type="text"
+                    type="number"
                     step="any"
                     class="form-control my-2"
                     placeholder="Lectura Actual"
-                    id="secundaria"
+                    id="slecturaActual"
                   />
                 </div>
                 <div class="col-12 d-flex justify-content-end">
@@ -493,30 +522,30 @@
 
                 <div class="col-6">
                   <input
-                    type="text"
+                    type="number"
                     step="any"
                     class="form-control my-2"
                     placeholder="Subtotal"
-                    id="secundaria"
+                    id="subtotal"
                   />
                 </div>
-
+<!-- 
                 <div class="col-6">
                   <input
-                    type="text"
+                    type="number"
                     step="any"
                     class="form-control my-2"
                     placeholder="Total descuentos"
-                    id="secundaria"
+                    id="descuentos"
                   />
-                </div>
+                </div> -->
                 <div class="col-6">
                   <input
-                    type="text"
+                    type="number"
                     step="any"
                     class="form-control my-2"
                     placeholder="Total a pagar"
-                    id="secundaria"
+                    id="totalpagar"
                   />
                 </div>
                 <div class="col-6 d-flex justify-content-end my-2">
@@ -535,6 +564,7 @@
           </div>
         </form>
       </div>
+      </section>
     </div>
     <dialog
       id="formServicios"
@@ -850,11 +880,7 @@
   <script src="./planillas.js" defer></script>
 
   <script>
-    $(document).ready(function() {
-    $('.select2').select2({
-    closeOnSelect: false
-});
-});
+
     function mostrarFormServicios() {
       console.log("MostrarFormServicios");
       const dialog = document.getElementById("formServicios");
@@ -865,6 +891,16 @@
 <style>
   body {
     background: #eee;
+  }
+  section {
+    height: 100vh;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  section.active {
+    display: block;
+    opacity: 1;
   }
   .form-control {
     border-radius: 0;
