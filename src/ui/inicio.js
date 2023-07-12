@@ -24,15 +24,15 @@ const abrirUsuarios = async () => {
   await ipcRenderer.send("abrirInterface", url);
 };
 const abrirPagos = async () => {
-  const url = "src/ui/pagos.html";
-  await ipcRenderer.send("abrirInterface", url);
-};
-const abrirPlanillas = async () => {
   const url = "src/ui/planillas.html";
   await ipcRenderer.send("abrirInterface", url);
 };
+const abrirPlanillas = async () => {
+  const url = "src/ui/planillas-cuotas.html";
+  await ipcRenderer.send("abrirInterface", url);
+};
 const abrirParametros = async () => {
-  const url = "src/ui/parametros.html";
+  const url = "src/ui/planillas-cuotas.html";
   await ipcRenderer.send("abrirInterface", url);
 };
 const abrirImplementos = async () => {

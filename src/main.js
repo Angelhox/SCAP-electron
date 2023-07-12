@@ -1,4 +1,5 @@
 const { BrowserWindow, Notification } = require("electron");
+const Notifications = require("electron-notification-shim");
 const { ipcMain } = require("electron");
 const { getConnection } = require("./database");
 
@@ -332,7 +333,6 @@ ipcMain.handle("createContrato", async (event, contrato) => {
 });
 // Funciones de las planillas
 ipcMain.handle("createPlanillas", async (event) => {
-  console.log('llegamos al main');
   let numeroContratos = [];
   try {
     const conn = await getConnection();
@@ -341,20 +341,50 @@ ipcMain.handle("createPlanillas", async (event) => {
     // Cuento cuantas planillas debo generar
     numeroContratos = await conn.query("select * from contratos;");
     // Recorro un ciclo de acuerdo al numero de contratos
-    console.log('numeroContratos: ',numeroContratos);
-    numeroContratos.forEach(async function (contrato){
+    console.log("numeroContratos: ", numeroContratos);
+    numeroContratos.forEach(async function (contrato) {
       const planillaDefecto = {
-        fecha:formatearFecha(new Date()) ,
+        fecha: formatearFecha(new Date()),
         valor: 2.0,
         estado: "Por Cobrar",
         lecturaAnterior: 0.0,
         lecturaActual: 0.0,
         observacion: "NA",
+        estadoEdicion: "Sin editar",
         contratosId: contrato.id,
       };
       const result = await conn.query(
         "Insert into planillas set ?",
         planillaDefecto
+      );
+      planillaDefecto.id = result.insertId;
+      const parametrosDesechos = await conn.query(
+        "select * from parametros where nombreParametro='Tarifa recolección de desechos';"
+      );
+      const parametrosAlcantarillado = await conn.query(
+        "select * from parametros where nombreParametro='Tarifa alcantarillado';"
+      );
+      const servicioDesechos = {
+        servicio: 'Recoleccion de desechos',
+        descripcion:'Servicio de recoleccion de deschos orgánicos e inorgánicos',
+        fecha: formatearFecha(new Date()),
+        valor: 1.60,
+        planillaId: planillaDefecto.id,
+      };
+      const resultServicios1 = await conn.query(
+        "Insert into servicios set ? ",
+        servicioDesechos
+      );
+      const servicioAlcantarillado = {
+        servicio: 'Tarifa Alcantarillado',
+        descripcion: 'Servicio de alcantarillado',
+        fecha: formatearFecha(new Date()),
+        valor: 1.0,
+        planillaId: planillaDefecto.id,
+      };
+      const resultServicios2 = await conn.query(
+        "Insert into servicios set ? ",
+        servicioAlcantarillado
       );
       console.log(result);
     });
@@ -368,6 +398,7 @@ ipcMain.handle("createPlanillas", async (event) => {
     console.log(error);
   }
 });
+// No estamos usando esta funcion
 ipcMain.handle("getDatosPlanillas", async () => {
   const conn = await getConnection();
   const results = conn.query(
@@ -383,6 +414,176 @@ ipcMain.handle("getDatosPlanillas", async () => {
   );
   console.log(results);
   return results;
+});
+// Funcion que carga los datos de la planilla para editarlos
+ipcMain.handle("getDatosPlanillaById", async (event, planillaId) => {
+  const conn = await getConnection();
+  const results = conn.query(
+    "select planillas.id,planillas.fecha,planillas.valor,planillas.estado," +
+      "planillas.estadoEdicion,planillas.lecturaActual,planillas.lecturaAnterior," +
+      "planillas.observacion,planillas.codigo as codigoPlanillas," +
+      "medidores.codigo as codigoMedidores, socios.nombre, socios.apellido,socios.cedula," +
+      "concat(medidores.barrio,', ',medidores.callePrincipal,' y ',medidores.calleSecundaria," +
+      "', casa: ',medidores.numeroCasa,' ',medidores.referencia) as ubicacion " +
+      "from planillas " +
+      "join contratos on contratos.id=planillas.contratosId join medidores on " +
+      "contratos.id=medidores.contratosId join socios on socios.id=contratos.sociosId " +
+      "where planillas.id=" +
+      planillaId +
+      ";"
+  );
+  console.log(results);
+  return results;
+});
+// Funcion que relaiza un filtro entre las planillas de acuerdo al codigo del medidor
+ipcMain.handle(
+  "getDatosPlanillasByCodigo",
+  async (
+    event,
+    codigoMedidor,
+    fechaPlanilla,
+    estadoPlanilla,
+    estadoEdicion
+  ) => {
+    try {
+      const conn = await getConnection();
+      conn.query("SET lc_time_names = 'es_ES';");
+      const results = conn.query(
+        "select planillas.id,planillas.fecha,planillas.valor,planillas.estado,planillas.estadoEdicion," +
+          "planillas.lecturaActual,planillas.lecturaAnterior,planillas.observacion," +
+          "planillas.codigo as codigoPlanillas," +
+          "medidores.codigo as codigoMedidores,socios.cedula, socios.nombre, socios.apellido," +
+          "concat(medidores.barrio,', ',medidores.callePrincipal,' y ',medidores.calleSecundaria,', casa: '," +
+          "medidores.numeroCasa,' ',medidores.referencia,'-') as ubicacion " +
+          "from planillas " +
+          "join contratos on contratos.id=planillas.contratosId join medidores on " +
+          "contratos.id=medidores.contratosId join socios on socios.id=contratos.sociosId " +
+          "where medidores.codigo LIKE'%" +
+          codigoMedidor +
+          "%' and monthname(planillas.fecha)like '%" +
+          fechaPlanilla +
+          "%' " +
+          "and planillas.estado like'%" +
+          estadoPlanilla +
+          "%' and planillas.estadoEdicion like'%" +
+          estadoEdicion +
+          "%';"
+      );
+
+      const notification = new Notification({
+        title: "Exito",
+        body: "Se muestran los datos del medidor",
+        // icon: "/path/to/icon.png",
+        // onClick: () => {
+        //   // Acción a realizar al hacer clic en la notificación
+        // },
+      });
+      notification.show();
+
+      console.log(results);
+      return results;
+    } catch (error) {
+      const notification = new Notification({
+        title: "Error",
+        body: "Es posible que el medidor proporcionado no exista",
+        // icon: "/path/to/icon.png",
+        // onClick: () => {
+        //   // Acción a realizar al hacer clic en la notificación
+        // },
+      });
+      notification.show();
+    }
+  }
+);
+// Funcion que carga los servicios de acuerdo al id de la planilla
+ipcMain.handle("getServiciosByPlanillaId", async (event, planillaId) => {
+  const conn = await getConnection();
+  const result = await conn.query(
+    "select planillas.codigo,servicios.id," +
+      "servicios.servicio,servicios.descripcion,servicios.fecha,servicios.valor " +
+      "from servicios join planillas on planillas.id=servicios.planillaId " +
+      "where planillas.id=?;",
+    planillaId
+  );
+  console.log(result);
+  return result;
+});
+// Funcion que crea servicios asignandolos a una planilla
+ipcMain.handle("createServicio", async (event, servicio) => {
+  try {
+    const conn = await getConnection();
+    console.log("Servicio Recibido: ", servicio);
+
+    const result = await conn.query("Insert into servicios set ?", servicio);
+    console.log(result);
+    new Notification({
+      title: "Electrom Mysql",
+      body: "New servicio saved succesfully",
+    }).show();
+    servicio.id = result.insertId;
+    return servicio;
+  } catch (error) {
+    console.log(error);
+  }
+});
+// Funcion que carga multas y descuentos de acuerdo al id de la planilla
+ipcMain.handle("getMultasDescByPlanillaId", async (event, planillaId) => {
+  const conn = await getConnection();
+  const result = await conn.query(
+    "select planillas.codigo,multasdescuentos.id,multasdescuentos.tipo," +
+      "multasdescuentos.motivo,multasdescuentos.fecha,multasdescuentos.valor from " +
+      "multasdescuentos join planillas on planillas.id=multasdescuentos.planillaId " +
+      "where planillas.id=?;",
+    planillaId
+  );
+  console.log(result);
+  return result;
+});
+// Funciones de los parametros
+ipcMain.handle("createParametro", async (event, parametro) => {
+  try {
+    const conn = await getConnection();
+    console.log("Recibido: ", parametro);
+    parametro.valor = parseFloat(parametro.valor);
+    const result = await conn.query("Insert into parametros set ?", parametro);
+    console.log(result);
+    new Notification({
+      title: "Electrom Mysql",
+      body: "New parametro saved succesfully",
+    }).show();
+    parametro.id = result.insertId;
+    return parametro;
+  } catch (error) {
+    console.log(error);
+  }
+});
+ipcMain.handle("getParametros", async () => {
+  const conn = await getConnection();
+  const results = conn.query("Select * from parametros order by id desc;");
+  console.log(results);
+  return results;
+});
+ipcMain.handle("getParametroById", async (event, id) => {
+  const conn = await getConnection();
+  const result = await conn.query("Select * from parametros where id = ?", id);
+  console.log(result[0]);
+  return result[0];
+});
+ipcMain.handle("updateParametro", async (event, id, parametro) => {
+  const conn = await getConnection();
+  const result = await conn.query("UPDATE parametros set ? where id = ?", [
+    parametro,
+    id,
+  ]);
+  console.log(result);
+  return result;
+});
+ipcMain.handle("deleteParametro", async (event, id) => {
+  console.log("id from main.js: ", id);
+  const conn = await getConnection();
+  const result = await conn.query("Delete from parametros where id = ?", id);
+  console.log(result);
+  return result;
 });
 function formatearFecha(fecha) {
   const fechaOriginal = new Date(fecha);

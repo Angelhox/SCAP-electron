@@ -22,6 +22,7 @@
     "choices": "^0.1.3",
     "choices.js": "^10.2.0",
     "electron": "^25.2.0",
+    "electron-notification-shim": "^1.1.0",
     "electron-packager": "^17.1.1",
     "electron-reload": "^2.0.0-alpha.1",
     "jquery": "^3.7.0",
