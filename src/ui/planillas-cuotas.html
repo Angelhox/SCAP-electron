@@ -239,6 +239,7 @@
               <label for="cedula">Nombres del socio</label>
               <div class="input-group">
                 <input
+                  readonly
                   type="text"
                   class="form-control"
                   placeholder="Buscar..."
@@ -254,8 +255,8 @@
                 class="form-select"
                 aria-label="Default select example"
               >
-                <option selected value="Editada">Editada</option>
-                <option value="Sin editar">Sin editar</option>
+                <option value="Editada">Editada</option>
+                <option selected value="Sin editar">Sin editar</option>
               </select>
             </div>
             <!-- select filtro por mes -->
@@ -319,6 +320,7 @@
               <label for="cedula">Ubicacion del medidor</label>
               <div class="input-group">
                 <input
+                  readonly
                   type="text"
                   class="form-control"
                   placeholder="Buscar..."
@@ -342,6 +344,33 @@
                 ></ul>
               </div> -->
             </div>
+            <!-- select filtro por mes de la cuota -->
+            <div class="col-2">
+              <label for="">Mes de la cuota</label>
+              <select
+                id="fechaCuota"
+                class="form-select"
+                aria-label="Default select example"
+              >
+                <option selected value="Julio">Julio</option>
+                <option value="Marzo">Marzo</option>
+                <option value="Abril">Abril</option>
+                <option value="Mayo">Mayo</option>
+              </select>
+            </div>
+
+            <!-- select filtro por estado de cuenta de la planilla-->
+            <div class="col-2">
+              <label for="">Estado de la cuota</label>
+              <select
+                id="estadoCuota"
+                class="form-select"
+                aria-label="Default select example"
+              >
+                <option selected value="Por cobrar">Por cobrar</option>
+                <option value="Cancelada">Cancelada</option>
+              </select>
+            </div>
           </div>
         </div>
         <!-- <div class="col-12">
@@ -349,7 +378,7 @@
       </div> -->
         <div class="row">
           <div
-            class="col-lg-7 col-md-7 col-sm-12 my-2"
+            class="col-lg-6 col-md-7 col-sm-12 my-2"
             style="height: 50vh; overflow-y: auto; overflow-x: auto"
           >
             <!-- Tabla de listado de usuarios -->
@@ -364,7 +393,7 @@
                   </tr>
                   <tr>
                     <th>Planilla</th>
-                    <th>Medidor</th>
+
                     <th>Fecha</th>
                     <th>Valor</th>
                     <th>Estado edicion</th>
@@ -377,24 +406,19 @@
                 </thead>
                 <tbody id="planillas">
                   <tr>
-                    <td>100200300</td>
-                    <td>100200500</td>
-                    <td>2023-12-11</td>
-                    <td>20.30</td>
-                    <td>Generada</td>
-                    <td>Cancelada</td>
-                    <td>0000000147.5</td>
-                    <td>0000000160.9</td>
+                    <td class="fs-4 text-center" colspan="7">
+                      Nada para mostrar aún, empieza buscando un medidor
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
           <div
-            class="col-lg-5 col-md-5 col-sm-12 my-2"
+            class="col-lg-6 col-md-5 col-sm-12 my-2"
             style="height: 50vh; overflow-y: auto; overflow-x: auto"
           >
-            <!-- Tabla de listado de usuarios -->
+            <!-- Tabla de listado de cuotas -->
             <div style="width: 100%; height: 100%">
               <table class="table">
                 <thead class="table-dark">
@@ -405,32 +429,38 @@
                     </th>
                   </tr>
                   <tr>
-                    <th>Medidor</th>
-                    <th>Socio</th>
-                    <th>Cedula</th>
-                    <th>Cuota</th>
                     <th>Fecha</th>
-                    <th>Motivo</th>
+                    <th>Cuota</th>
                     <th>Valor</th>
-                    <th>Estado</th>
 
+                    <th>Estado</th>
                     <th></th>
                     <th></th>
                   </tr>
                 </thead>
-                <tbody id="planillas">
+                <!-- Tabla del inicio -->
+                <tbody id="Initcuotas">
                   <tr>
-                    <td>100200500</td>
-                    <td>Mario Salinas Fuentes</td>
-                    <td>1724674823</td>
-                    <td>Fiestas</td>
-                    <td>2023-12-11</td>
-                    <td>Fiestas de San Pedro</td>
-                    <td>20.30</td>
-                    <td>Cancelada</td>
+                    <td class="fs-4 text-center" colspan="7">
+                      Nada para mostrar aún, empieza buscando un medidor
+                    </td>
                   </tr>
                 </tbody>
               </table>
+              <div
+                class="row bg-white"
+                hidden
+                style="position: sticky; bottom: 0"
+              >
+                <div class="col-12 d-flex justify-content-end">
+                  <button
+                    class="btn btn-primary rounded-2 my-4"
+                    onclick="mostrarFormCuotas()"
+                  >
+                    Administrar
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -448,6 +478,7 @@
               <div class="col-2">
                 <label class="">Fecha emision de la planilla</label>
                 <input
+                  readonly
                   type="date"
                   class="form-control my-2"
                   placeholder="Fecha de Emision"
@@ -458,6 +489,7 @@
               <div class="col-2">
                 <label for="cedula">Cedula del socio</label>
                 <input
+                  readonly
                   type="text"
                   class="form-control my-2"
                   placeholder="Cedula"
@@ -467,6 +499,7 @@
               <div class="col-4">
                 <label for="nombrecompleto">Nombres del socio</label>
                 <input
+                  readonly
                   type="text"
                   class="form-control my-2"
                   placeholder="Socio"
@@ -477,6 +510,7 @@
               <div class="col-2">
                 <label for="estadocuentaUp">Estado de la planilla</label>
                 <input
+                  readonly
                   type="text"
                   class="form-control my-2"
                   placeholder="Estado"
@@ -484,53 +518,21 @@
                 />
               </div>
               <div class="col-2">
-                <label for="estadoedicionUp">Edicion de la planilla</label>
-                <input
-                  type="text"
-                  class="form-control my-2"
-                  placeholder="Estado"
+                <label for="">Edición de la planilla</label>
+                <select
                   id="estadoedicionUp"
-                />
+                  class="form-select"
+                  aria-label="Default select example"
+                >
+                  <option value="Editada">Editada</option>
+                  <option value="Sin editar">Sin editar</option>
+                </select>
               </div>
-              <!-- <div class="col-2">
-              <input
-                type="text"
-                class="form-control my-2"
-                placeholder="Teléfono"
-                id="telefono"
-              />
-            </div> -->
 
-              <!-- <div class="form-check form-switch col-y
-              <input
-                class="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="flexSwitchCheckCheckedDisabled"
-                checked
-                disabled
-              />
-              <label
-                class="form-check-label"
-                for="flexSwitchCheckCheckedDisabled"
-                >Disabled checked switch checkbox input</label
-              >
-            </div> -->
-
-              <!-- Select con la lista de medidores disponible -->
-
-              <!-- <div class="col-3">
-              <label class="text-white">Fecha de instalación</label>
-              <input
-                type="date"
-                class="form-control my-2"
-                placeholder="Fecha de Instalación"
-                id="fechaInstalacion"
-              />
-            </div> -->
               <div class="col-2">
                 <label for="codigomedidorUp">Código del medidor</label>
                 <input
+                  readonly
                   type="text"
                   class="form-control my-2"
                   placeholder="Código del medidor"
@@ -541,6 +543,7 @@
               <div class="col-6">
                 <label for="ubicacionmedidorUp">Ubicacion del medidor</label>
                 <input
+                  readonly
                   type="text"
                   step="any"
                   class="form-control my-2"
@@ -602,6 +605,7 @@
                       <div class="col-6">
                         <label for="">Total Servicios</label>
                         <input
+                          readonly
                           type="number"
                           step="any"
                           class="form-control my-2"
@@ -609,6 +613,7 @@
                           id="subtotal"
                         />
                       </div>
+                     
                       <div class="col-6 d-flex justify-content-end">
                         <button
                           class="btn btn-primary my-4 rounded-2"
@@ -626,32 +631,28 @@
                     style="width: 50%; height: 40vh; overflow-y: auto"
                   >
                     <table class="table" style="height: 20vh">
-                      <thead
-                        class="table-dark"
-                        style="position: sticky; top: 0"
-                      >
+                      <thead class="table-dark">
                         <tr>
-                          <th colspan="9" class="text-center fs-4">
-                            Multas y Descuentos
+                          <th colspan="11" class="text-center fs-4">
+                            CUOTAS
                             <i class="fa-solid fa-user-tie"></i>
                           </th>
                         </tr>
                         <tr>
                           <th>Fecha</th>
-                          <th>Multa/Descuento</th>
-                          <th>Motivo</th>
+                          <th>Cuota</th>
                           <th>Valor</th>
+                          <th>Estado</th>
                           <th></th>
                           <th></th>
                         </tr>
                       </thead>
-                      <tbody id="multasdesc">
+                      <!-- tabla de edicion -->
+                      <tbody id="cuotas">
                         <tr>
-                          <td>100200300</td>
-                          <td>Mario Salinas Fuentes</td>
-                          <td>1725674829</td>
-
-                          <td>calle principal y secundaria</td>
+                          <td class="fs-4 text-center" colspan="7">
+                            Nada para mostrar aún, empieza agregando una cuota
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -662,6 +663,7 @@
                       <div class="col-4">
                         <label for="">Total Multas</label>
                         <input
+                          readonly
                           type="number"
                           step="any"
                           class="form-control my-2"
@@ -672,6 +674,7 @@
                       <div class="col-4">
                         <label for="">Total Descuentos</label>
                         <input
+                          readonly
                           type="number"
                           step="any"
                           class="form-control my-2"
@@ -681,8 +684,11 @@
                       </div>
 
                       <div class="col-4 d-flex justify-content-end">
-                        <button class="btn btn-primary rounded-2 my-4">
-                          +Descuento/Multa
+                        <button
+                          class="btn btn-primary rounded-2 my-4"
+                          onclick="mostrarFormCuotas()"
+                        >
+                          Administrar
                         </button>
                       </div>
                     </div>
@@ -694,6 +700,7 @@
                   <div class="col-12">
                     <label for="">Lectura Anterior</label>
                     <input
+                      readonly
                       type="number"
                       step="any"
                       class="form-control my-2"
@@ -708,13 +715,14 @@
                       step="any"
                       class="form-control my-2"
                       placeholder="Lectura Actual"
-                      id="slecturaActual"
+                      id="lecturaActual"
                     />
                   </div>
 
                   <div class="col-12">
                     <label for="">Subtotal</label>
                     <input
+                      readonly
                       type="number"
                       step="any"
                       class="form-control my-2"
@@ -758,6 +766,256 @@
         </div>
       </section>
     </div>
+    <dialog
+      id="formCuotas"
+      style="
+        background-color: yellowgreen;
+        border: #00000000;
+        padding: 0;
+        backdrop-filter: blur(10px);
+      "
+      class="vw-100 vh-100"
+    >
+      <section
+        class="active"
+        style="width: 100%; height: 100%; margin: 0 auto"
+        class="text-white container-fluid"
+      >
+        <div class="row container-fluid" style="height: 100%">
+          <div class="col-12">
+            <p class="text-white fs-5">Inicio/Registros/Cuotas</p>
+          </div>
+          <div
+            class="col-lg-8 col-md-8 col-sm-12"
+            style="
+              height: 50vh;
+
+              padding: 10px;
+            "
+          >
+            <!-- Tabla de listado de usuarios -->
+            <div style="width: 100%; height: 100%">
+              <table class="table">
+                <thead class="table-dark">
+                  <tr>
+                    <th colspan="11" class="text-center fs-4">
+                      CUOTAS
+                      <i class="fa-solid fa-user-tie"></i>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Cuota</th>
+                    <th>Valor</th>
+                    <th>Descuento</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="inFormCuotas">
+                  <tr>
+                    <td>2023-12-11</td>
+                    <td>Fiestas</td>
+                    <td>20.30</td>
+                    <td>5.00</td>
+                    <td>15.30</td>
+                    <td>Cancelada</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12" style="padding-top: 10px">
+            <form class="form-horizontal" id="cuotaForm">
+              <div class="col-12 text-white text-center fs-4">
+                Datos la cuota
+              </div>
+
+              <input
+                type="date"
+                class="form-control my-2"
+                placeholder="Fecha"
+                id="fechacuota"
+              />
+              <input
+                type="text"
+                class="form-control my-2"
+                placeholder="Cuota"
+                id="cuota"
+              />
+              <input
+                type="text"
+                class="form-control my-2"
+                placeholder="Motivo"
+                id="motivocuota"
+              />
+              <input
+                type="number"
+                step="any"
+                class="form-control my-2"
+                placeholder="Valor"
+                id="valorcuota"
+              />
+
+              <div class="col-12 d-flex justify-content-end">
+                <button class="btn btn-primary mx-2 rounded-2">Guardar</button>
+                <button class="btn btn-danger rounded-2">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Acciones y formulario de los implementos para cada servicio -->
+        <div class="row container-fluid" style="height: 50%; display: none">
+          <div class="col-12">
+            <p class="text-white fs-5">Inicio/Registros/Implementos</p>
+          </div>
+          <div
+            class="col-lg-8 col-md-8 col-sm-12"
+            style="
+              height: 60vh;
+
+              padding: 10px;
+            "
+          >
+            <!-- Tabla de listado de usuarios -->
+            <div style="width: 100%; height: 100%">
+              <table class="table">
+                <thead class="table-dark">
+                  <tr>
+                    <th colspan="9" class="text-center fs-4">
+                      Implementos que fuero requeridos
+                      <i class="fa-solid fa-user-tie"></i>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>Id</th>
+                    <th>Codigo</th>
+                    <th>Implemento</th>
+                    <th>Descripcion</th>
+                    <th>Marca</th>
+                    <th>Cantidad</th>
+                    <th>Valor unitario</th>
+                    <th>Total</th>
+
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="socios">
+                  <tr>
+                    <td>1</td>
+                    <td>100200300</td>
+                    <td>Llave de agua</td>
+                    <td>Llave de agua tipo pesada</td>
+                    <td>FV</td>
+                    <td>1</td>
+                    <td>7.00</td>
+                    <td>7.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12" style="padding-top: 10px">
+            <form class="form-horizontal" id="descuentosForm">
+              <div class="col-12 text-white text-center fs-4">
+                Datos del implemento
+              </div>
+
+              <div class="col-12 my-2">
+                <!-- <div class="form-group">
+                    <label>Multiple</label> -->
+                <select
+                  class="form-control select2 select2-hidden-accessible"
+                  data-placeholder="Select a State"
+                  style="width: 100%"
+                  tabindex="-1"
+                  aria-hidden="true"
+                >
+                  <option selected>Codigo</option>
+                  <option>Alaska</option>
+                  <option>California</option>
+                  <option>Delaware</option>
+                  <option>Tennessee</option>
+                  <option>Texas</option>
+                  <option>Washington</option>
+                </select>
+                <!-- </div> -->
+              </div>
+              <div class="col-12 mt-2 mb-1">
+                <select
+                  class="form-control select2 select2-hidden-accessible"
+                  data-placeholder="Select a State"
+                  style="width: 100%"
+                  tabindex="-1"
+                  aria-hidden="true"
+                >
+                  <option selected>Implemento</option>
+                  <option>Alaska</option>
+                  <option>California</option>
+                  <option>Delaware</option>
+                  <option>Tennessee</option>
+                  <option>Texas</option>
+                  <option>Washington</option>
+                </select>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <input
+                    type="text"
+                    class="form-control my-1"
+                    placeholder="Descripcion"
+                    id="fecha"
+                  />
+                </div>
+                <div class="col-6">
+                  <input
+                    type="number"
+                    class="form-control my-1"
+                    placeholder="Marca"
+                    id="descripcion"
+                  />
+                </div>
+                <div class="col-6">
+                  <input
+                    type="number"
+                    step="any"
+                    class="form-control my-1"
+                    placeholder="Valor unitario"
+                    id="valor"
+                  />
+                </div>
+                <div class="col-6">
+                  <input
+                    type="number"
+                    step="any"
+                    class="form-control my-1"
+                    placeholder="Cantidad"
+                    id="valor"
+                  />
+                </div>
+                <div class="col-6">
+                  <input
+                    type="number"
+                    step="any"
+                    class="form-control my-1"
+                    placeholder="Valor total"
+                    id="valortotal"
+                  />
+                </div>
+              </div>
+              <div class="col-12 d-flex justify-content-end">
+                <button class="btn btn-primary mx-2 rounded-2">Guardar</button>
+                <button class="btn btn-danger rounded-2">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </dialog>
     <dialog
       id="formServicios"
       style="

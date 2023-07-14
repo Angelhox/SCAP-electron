@@ -24,6 +24,7 @@
     "electron": "^25.2.0",
     "electron-notification-shim": "^1.1.0",
     "electron-packager": "^17.1.1",
+    "electron-pdf-window": "^1.0.0",
     "electron-reload": "^2.0.0-alpha.1",
     "jquery": "^3.7.0",
     "mysql": "^2.18.1",
