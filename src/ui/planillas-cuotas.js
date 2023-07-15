@@ -1,23 +1,368 @@
-const { ipcRenderer } = require("electron");
+const { timeStamp } = require("console");
+const { ipcRenderer, remote } = require("electron");
+const printer = require("pdf-to-printer");
 // ----------------------------------------------------------------
-const { createPDFWindow } = require("electron-pdf-window");
+const pdf = require("html-pdf");
+const nombre="Angelho Client"
+const imprimirPDF = async () => {
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
 
-const imprimirHTML = async (htmlContent) => {
-  const pdfWin = createPDFWindow({
-    width: 800,
-    height: 600,
-  });
+  .invoice {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+  }
 
-  pdfWin.loadURL(
-    `data:text/html;base64,${Buffer.from(htmlContent).toString("base64")}`
-  );
-  pdfWin.on("pdf-ready", () => {
-    pdfWin.webContents.print();
-    pdfWin.close();
+  .invoice-header {
+    display: flex;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .invoice-header h1 {
+    align-self: center;
+    margin: 0 auto;
+    color: #333;
+    font-size: 24px;
+  }
+  .invoice-header h4 {
+    align-self: center;
+    margin: 0 auto;
+    color: #333;
+    font-size: 24px;
+  }
+  .invoice-items-header {
+    align-self: center;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+  }
+  .invoice-details {
+    display: flex;
+    margin-top: 0;
+    padding: 0;
+    justify-content: space-evenly;
+  }
+  .invoice-details p {
+    display: flex;
+    margin-top: 0;
+    padding: 0;
+    justify-content: space-evenly;
+  }
+  .invoice-details .label {
+    font-weight: bold;
+    font-size: 20rem;
+  }
+
+  .invoice-items {
+    width: 100%;
+  }
+
+  .invoice-items th,
+  .invoice-items td {
+    text-align: center;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    font-size: 15px;
+  }
+  .invoice-items .titles {
+    text-align: left;
+  }
+  .logo {
+    align-self: start;
+    width: 15%;
+    filter: grayscale(100%);
+  }
+  table {
+    margin-bottom: 10px;
+  }
+  .signatures {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .signature {
+    margin: 15px 0;
+    border-top: 1px dotted #000;
+    width: 250px;
+    text-align: center;
+  }
+
+</style>
+  </head>
+  <body>
+  <div class="invoice">
+    <div class="invoice-header">
+      <img class="logo" src="../src/assets/fonts/logo.png" alt="Not found" />
+      <div style="align-self: center; margin: 0 auto">
+        <h1>RECAUDACION DE CONSUMO DE AGUA POTABLE Y SERVICIOS</h1>
+        <p>Santo domingo N°1</p>
+        <div class="invoice-items-header">
+          <p><strong>N° Comprobante:</strong>100200300</p>
+          <p><strong>Fecha:</strong>100200300</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="invoice-details">
+      <p><strong>Socio:</strong> ${nombre}</p>
+      <p><strong>Cedula-Ruc:</strong> 15 de enero de 2022</p>
+      <p><strong>Telefono:</strong>0984760554</p>
+      <p><strong>Direccion</strong>Cayambe</p>
+    </div>
+    <hr class="separator" />
+    <div class="invoice-details">
+      <p><strong>Planilla:</strong> 9999999999</p>
+      <p><strong>Medidor:</strong> NA</p>
+      <p><strong>Ubicacion:</strong>Barrio Central, Floresta y Buenavista</p>
+    </div>
+    <hr class="separator" />
+    <table class="invoice-items">
+      <thead>
+        <tr>
+          <th colspan="5" class="titles">Agua potable</th>
+        </tr>
+        <tr>
+          <th>Anterior</th>
+          <th>Actual</th>
+          <th>Consumo</th>
+          <th>Tarifa</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>000000075</td>
+          <td>000000175</td>
+          <td>100</td>
+          <td>Industrial</td>
+          <td>$20</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="invoice-items">
+      <thead>
+        <tr>
+          <th colspan="3" class="titles">Servicios</th>
+        </tr>
+        <tr>
+          <th>Servicios</th>
+          <th>Descripcion</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Desechos</td>
+          <td>Recoleccion semanal de desechos</td>
+          <td>$1.00</td>
+        </tr>
+        <tr>
+          <td>Fiestas</td>
+          <td>Fiesta de San Pedro</td>
+          <td>$10</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="invoice-items">
+      <thead>
+        <tr>
+          <th colspan="5" class="titles">Cuotas</th>
+        </tr>
+        <tr>
+          <th>Cuotas</th>
+          <th>Descripcion</th>
+          <th>Total</th>
+          <th>Abono</th>
+          <th>Saldo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Multa</td>
+          <td>Multa por falta a mingas</td>
+          <td>$20</td>
+          <td>$10</td>
+          <td>$10</td>
+        </tr>
+        <tr>
+          <td>Fiestas</td>
+          <td>Fiesta de San Pedro</td>
+          <td>$10</td>
+          <td>$10</td>
+          <td>$0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="signatures">
+    <div class="signature">Entregado</div>
+
+  </div>
+</body>
+</html>
+`;
+  const timestamp = new Date().getTime(); // Obtener el timestamp actual
+  const fileName = `documento_${timestamp}.pdf`;
+  const filePath = "X:/FacturasSCAP/" + fileName;
+  await pdf.create(htmlContent).toFile(filePath, (err, res) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log("Archivo PDF creado: ", res.filename);
+    // Enviamos el archivo a la cola de impresion
+    printer
+      .print(filePath)
+      .then(() => {
+        // Impresión exitosa
+        console.log("El PDF se ha enviado a la cola de impresión.");
+      })
+      .catch((error) => {
+        // Error de impresión
+        console.error("Error al imprimir el PDF:", error);
+      });
   });
 };
 
-// Llamada a la función imprimirHTML con el contenido HTML que deseas imprimir
+// ----------------------------------------------------------------
+// Funciona hay que diseñar el reporte con PDFKit
+// const fs = require("fs");
+// const PDFDocument = require("pdfkit");
+// const printer = require("pdf-to-printer");
+
+// const imprimirPDF = async () => {
+//   // const doc = new PDFDocument();
+//   // doc.text("Contenido del PDF a imprimir ZASS");
+
+//   // Tratamos de personalizar la factura****************************
+//   const facturaTable = document.querySelector(".table-factura");
+//   const filas = facturaTable.querySelectorAll("tr");
+
+//   // Crear el documento PDF
+//   const doc = new PDFDocument();
+
+//   // Insertar el logo de la factura
+//   doc.image("src/assets/fonts/logo.png", {
+//     fit: [100, 100],
+//     align: "left",
+//     valign: "top",
+//     y: 50,
+//     y: 50,
+//   });
+
+//   // Personalizar el contenido de la factura
+//   doc
+//     .font("Helvetica-Bold")
+//     .fontSize(10)
+//     .text("RECAUDACION DE AGUA POTABLE CUOTAS Y SERVICIOS", {
+//       align: "right",
+//       x: 80,
+//       y: 80,
+//     });
+//   doc
+//     .font("Helvetica")
+//     .fontSize(10)
+//     .text("Santo Domingo N°1", { align: "center" });
+//     doc.moveDown();
+//     doc
+//     .font("Helvetica")
+//     .fontSize(10)
+//     .text("Santo Domingo N°1",{x:600,y:500});
+//   doc
+//     .font("Helvetica")
+//     .fontSize(10)
+//     .text("Factura", {align:"center",continued:true});
+//   doc
+//     .font("Helvetica-Bold")
+//     .fontSize(10)
+
+//   doc.text(" : ", { continued: true });
+//   doc.font("Helvetica").fontSize(10).text("0000000001", { continued: true });
+
+//   // Recorrer las filas de la tabla y agregar los datos al PDF
+//   filas.forEach((fila) => {
+//     const celdas = fila.querySelectorAll("td");
+
+//     celdas.forEach((celda) => {
+//       doc.text(celda.innerText, { continued: true });
+
+//       doc.moveUp();
+//       doc.text(" : ", { continued: true });
+//       doc.moveDown();
+//     });
+
+//     doc.moveDown();
+//   });
+
+//   const timestamp = new Date().getTime(); // Obtener el timestamp actual
+//   const fileName = `documento_${timestamp}.pdf`; // Agregar el timestamp al nombre del archivo
+
+//   const filePath = `C:/Users/USE/Documents/${fileName}`;
+//   const writeStream = fs.createWriteStream(filePath);
+//   doc.pipe(writeStream);
+//   doc.end();
+
+//   writeStream.on("finish", () => {
+//     printer
+//       .print(filePath)
+//       .then(() => {
+//         // Impresión exitosa
+//         console.log("El PDF se ha enviado a la cola de impresión.");
+//       })
+//       .catch((error) => {
+//         // Error de impresión
+//         console.error("Error al imprimir el PDF:", error);
+//       });
+//   });
+// };
+// ----------------------------------------------------------------
+// remote es de esta funcion
+// Esta funciona :)
+// const fs = require("fs");
+// const PDFDocument = require("pdfkit");
+
+// const imprimirPDF = async () => {
+//   const doc = new PDFDocument();
+//   doc.text("Contenido del PDF a imprimir");
+//   const timestamp = new Date().getTime(); // Obtener el timestamp actual
+//   const fileName = `factura_${timestamp}.pdf`
+//   // const filePath = await ipcRenderer.invoke("getDocumentsPath", "/documentos") + "/documento.pdf";
+//   const filePath = "C:/Users/USE/Documents" + "/"+fileName;
+//   const writeStream = fs.createWriteStream(filePath);
+//   doc.pipe(writeStream);
+//   doc.end();
+
+//   // writeStream.on("finish", () => {
+//   //   const printWindow = new remote.BrowserWindow({ show: false });
+//   //   printWindow.loadURL(`file://${filePath}`);
+//   //   printWindow.webContents.on("did-finish-load", () => {
+//   //     printWindow.webContents.print({ silent: true });
+//   //     printWindow.close();
+//   //   });
+//   // });
+//   writeStream.on("finish", () => {
+//     ipcRenderer.send("printPDF", filePath);
+//     console.log('filePath: ' + filePath);
+//   });
+// };
+
+// Escuchar respuesta del proceso principal
+ipcRenderer.on("printPDFComplete", (event, message) => {
+  console.log(message); // Imprimir mensaje de confirmación desde el proceso principal
+});
+
+// };
+
 // ----------------------------------------------------------------
 
 const socioCedula = document.getElementById("cedula");
@@ -623,11 +968,9 @@ var seccion2 = document.getElementById("seccion2");
 
 btnSeccion1.addEventListener("click", function () {
   console.log("btn1");
-  seccion1.classList.remove("active");
-  seccion2.classList.add("active");
-  imprimirHTML(
-    "<html><body><h1>Ejemplo de contenido HTML a imprimir</h1></body></html>"
-  );
+  // seccion1.classList.remove("active");
+  // seccion2.classList.add("active");
+  imprimirPDF();
 });
 
 btnSeccion2.addEventListener("click", function () {

@@ -50,16 +50,16 @@
               <ul
                 class="navbar-nav justify-content-center fs-5 flex-grow-1 pe-3 align-items-center"
               >
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                   <a
                     class="nav-link active"
                     aria-current="page"
                     onclick="abrirInicio()"
                     >Inicio</a
                   >
-                </li>
+                </li> -->
 
-                <li class="nav-item mx-2">
+                <!-- <li class="nav-item mx-2">
                   <div class="dropdown">
                     <button
                       class="nav-link btn btn-outline dropdown-toggle"
@@ -97,12 +97,12 @@
                         <a class="dropdown-item" href="#"
                           >Something else here</a
                         >
-                      </li> -->
+                      </li> aqui estaba comentado
                     </ul>
                   </div>
-                </li>
+                </li> -->
 
-                <li class="nav-item mx-2">
+                <!-- <li class="nav-item mx-2">
                   <a class="nav-link" onclick="abrirPagos()">Pagos</a>
                 </li>
 
@@ -111,21 +111,19 @@
                 </li>
                 <li class="nav-item mx-2">
                   <a class="nav-link" onclick="abrirContratos()">Contratos</a>
-                </li>
+                </li> -->
               </ul>
               <!-- Login/Sign up -->
               <div
                 class="d-flex justify-content-center align-items-center gap-3 flex-column flex-lg-row"
               >
                 <button
-                hidden
                   onclick="mostrarLogin()"
                   class="text-white px-3 py-1 rounded-1 btn bg-primary"
                 >
                   Iniciar sesion
                 </button>
-                <button type="button" class="text-black px-3 py-1 rounded-1 btn bg-white" onclick="cerrarSesion()">
-                  
+                <button type="button" class="text-black px-3 py-1 rounded-1 btn bg-white" onclick="salir()">
                   Salir
                 </button>
               </div>
@@ -186,14 +184,14 @@
               </div>
 
               <button class="btn btn-primary align-self-end">Ingresar</button>
-              <button class="btn btn-primary align-self-end">Cancelar</button>
+              <button type="button" onclick="cancelar()" class="btn btn-primary align-self-end">Cancelar</button>
             </div>
           </form>
         </div>
       </section>
     </dialog>
   </body>
-  <script src="./inicio.js" defer></script>
+  <script src="./login.js" defer></script>
   <script src="../../node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
   <script src="./bootstrap/js/bootstrap.min.js"></script>
 </html>

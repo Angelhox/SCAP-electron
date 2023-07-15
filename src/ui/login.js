@@ -10,19 +10,21 @@ loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const usuario = usuarioUsuario.value;
   const clave = usuarioClave.value;
-  await ipcRenderer.invoke("validarUsuarios", {
+  await ipcRenderer.send("validarUsuarios", {
     usuario,
     clave,
   });
-  loginForm.reset();
   usuarioUsuario.focus();
 });
 // ----------------------------------------------------------------
 // Funcion de recepcion de respuesta al intentar logearse
 // ----------------------------------------------------------------
-ipcRenderer.on("loginResponse", (event, response) => {
+// En el archivo de renderizado
+ipcRenderer.on("loginResponse", async (event, response) => {
   if (response.success) {
     console.log("Incio de session correcto");
+    const url = "src/ui/principal.html";
+    await ipcRenderer.send("abrirInterface", url);
   } else {
     if (response.message === "No existe este usuario") {
       console.log("Usuario incorrecto");
@@ -36,59 +38,32 @@ ipcRenderer.on("loginResponse", (event, response) => {
     }
   }
 });
-// ----------------------------------------------------------------
-// Funciones de cierre de sesion
-// ----------------------------------------------------------------
-function cerrarSesion() {
-  ipcRenderer.send('cerrarSesion');
-}
 
-ipcRenderer.on('sesionCerrada', async () => {
-  const url = "src/ui/login.html";
-  await ipcRenderer.send("abrirInterface", url);
-  
-});
+// ipcRenderer.on("showAlert", (event, message) => {
+//   alert(message);
+// });
 // ----------------------------------------------------------------
-// Esta funcion abre el formulario para el inicio de sesion
+// Funcion para mostrar el formulario de Login
 // ----------------------------------------------------------------
 function mostrarLogin() {
   const dialog = document.getElementById("loginDialog");
   dialog.showModal();
+}
+// ----------------------------------------------------------------
+// Funcion para ocultar el formulario de Login
+// ----------------------------------------------------------------
+function cancelar() {
+  const dialog = document.getElementById("loginDialog");
+  dialog.close();
+}
+// ----------------------------------------------------------------
+// Funcion para salir de la aplicacion
+// ----------------------------------------------------------------
+function salir() {
+ipcRenderer.send('salir');
 }
 // loginForm.addEventListener("submit", async (e) => {
 //   e.preventDefault();
 //   const url = "src/ui/usuarios.html";
 //   const result = ipcRenderer.send("abrirInterface", url);
 // });
-const abrirInicio = async () => {
-  const url = "src/ui/principal.html";
-  await ipcRenderer.send("abrirInterface", url);
-};
-const abrirSocios = async () => {
-  const url = "src/ui/socios.html";
-  await ipcRenderer.send("abrirInterface", url);
-};
-const abrirUsuarios = async () => {
-  const url = "src/ui/usuarios.html";
-  await ipcRenderer.send("abrirInterface", url);
-};
-const abrirPagos = async () => {
-  const url = "src/ui/planillas.html";
-  await ipcRenderer.send("abrirInterface", url);
-};
-const abrirPlanillas = async () => {
-  const url = "src/ui/planillas-cuotas.html";
-  await ipcRenderer.send("abrirInterface", url);
-};
-const abrirParametros = async () => {
-  const url = "src/ui/planillas-cuotas.html";
-  await ipcRenderer.send("abrirInterface", url);
-};
-const abrirImplementos = async () => {
-  const url = "src/ui/implementos.html";
-  await ipcRenderer.send("abrirInterface", url);
-};
-const abrirContratos = async () => {
-  const url = "src/ui/medidores.html";
-  await ipcRenderer.send("abrirInterface", url);
-};

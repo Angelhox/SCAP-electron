@@ -1,15 +1,25 @@
- const mysql=require('promise-mysql')
- const connection=mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'bdscapstdop2',
-    port: 3308
- })
- function getConnection(){
-     return connection;
- }
- module.exports={getConnection}
+const mysql = require("promise-mysql");
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "bdscapstdop2",
+  port: 3308,
+});
+function getConnection() {
+  return connection;
+}
+function cerrarConnection() {
+  connection.end((err) => {
+    if (err) {
+      console.error("Error al cerrar la conexión:", err);
+    } else {
+      connection = null;
+      console.log("Conexión cerrada correctamente.");
+    }
+  });
+}
+module.exports = { getConnection, cerrarConnection };
 //const mysql = require('mysql');
 
 // const connection = mysql.createConnection({

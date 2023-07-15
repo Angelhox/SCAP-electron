@@ -1,13 +1,172 @@
 const { BrowserWindow, Notification } = require("electron");
 const Notifications = require("electron-notification-shim");
-const { ipcMain } = require("electron");
-const { getConnection } = require("./database");
+const { app, ipcMain } = require("electron");
+const { getConnection, cerrarConnection } = require("./database");
 const path = require("path");
 const url = require("url");
+const { error } = require("console");
 
 ipcMain.on("hello", () => {
   console.log("Hello from renderer process");
 });
+
+// ----------------------------------------------------------------
+ipcMain.handle("getDocumentsPath", async (event, documentsPath) => {
+  //const documentsPath = app.getPath('documentos');
+  console.log("ruta:", documentsPath);
+  await event.sender.send("documentsPath", documentsPath);
+});
+
+// ----------------------------------------------------------------
+ipcMain.on("printPDF", (event, filePath) => {
+  const printWindow = new BrowserWindow({ show: true });
+  printWindow.loadURL(`file://${filePath}`);
+  printWindow.webContents.on("did-finish-load", () => {
+    printWindow.webContents.print({ silent: true });
+    //printWindow.close();
+
+    // Enviar confirmación al proceso de renderizado
+    event.sender.send(
+      "printPDFComplete",
+      "El PDF se ha impreso correctamente."
+    );
+  });
+});
+//Funciones de inicio de sesion
+ipcMain.on("validarUsuarios", async (event, { usuario, clave }) => {
+  try {
+    const conn = await getConnection();
+    const usuarioPeticion = await conn.query(
+      "SELECT usuario FROM usuarios WHERE usuario = ?",
+      usuario,
+      (error, results) => {
+        if (error) {
+          event.reply("loginResponse", {
+            success: false,
+            message: "Error en la consulta a la base de datos",
+          });
+        } else if (results.length > 0) {
+          console.log("usuario en peticion ");
+          conn.query(
+            "SELECT * from usuarios where usuario=? and clave=?",
+            [usuario, clave],
+            (error, results) => {
+              if (error) {
+                event.sender.send("loginResponse", {
+                  success: false,
+                  message: "Error en la consulta a la base de datos",
+                });
+                const notification = new Notification({
+                  title: "No se ha podido iniciar session!",
+                  body: "Ocurrio un error al consultar en la base de datos, si el problema persiste solicite soporte tecnico",
+                  icon: "/path/to/icon.png",
+                });
+
+                notification.show();
+              } else if (results.length > 0) {
+                event.sender.send("loginResponse", {
+                  success: true,
+                  message: "Credenciales correctas",
+                });
+                const notification = new Notification({
+                  title: "Credenciales correctas!",
+                  body: "Bienvenido usuario: " + usuario,
+                  icon: "/path/to/icon.png",
+                });
+
+                notification.show();
+              } else {
+                event.sender.send("loginResponse", {
+                  success: false,
+                  message: "Credenciales incorrectas",
+                });
+                // event.sender.send(
+                //   "showAlert",
+                //   "¡Este es un mensaje de alerta!"
+                // );
+                const notification = new Notification({
+                  title: "Error de credenciales!",
+                  body: "La contraseña es incorrecta",
+                  icon: "/path/to/icon.png",
+                });
+
+                notification.show();
+              }
+            }
+          );
+        } else {
+          event.sender.send("loginResponse", {
+            success: false,
+            message: "No existe este usuario",
+          });
+          const notification = new Notification({
+            title: "Error de credenciales!",
+            body: "No hay un usuario registrado para " + usuario,
+            icon: "/path/to/icon.png",
+          });
+
+          notification.show();
+        }
+      }
+    );
+  } catch (error) {
+    console.log("Error al iniciar session: ", error);
+  }
+  return usuarioPeticion;
+});
+// ----------------------------------------------------------------
+// Funciones para el cierre de sesion
+// ----------------------------------------------------------------
+ipcMain.on("cerrarSesion", async (event) => {
+  // await cerrarConnection();
+  event.sender.send("sesionCerrada");
+});
+// ----------------------------------------------------------------
+// Funcion para el cierre de la aplicacion
+// ----------------------------------------------------------------
+ipcMain.on("salir", async (event) => {
+  app.quit();
+});
+
+// ipcMain.on("loginResponse", (event, response) => {
+//   console.log("en uso login response");
+//   // Envía la respuesta de inicio de sesión al proceso de renderizado
+//   event.sender.send("loginResponse", response);
+// });
+// ----------------------------------------------------------------No funciono :(
+// ipcMain.on("printPDF", (event, filePath) => {
+//   console.log("llamando a la accion printPDF");
+//   const printWindow = new BrowserWindow({ show: false });
+//   printWindow.loadURL(`file://${filePath}`).catch(error=>console.log(error));
+//   console.log(`file://${filePath}`);
+//   try {
+//   printWindow.webContents.on("did-finish-load", () => {
+//     printWindow.webContents.print({ silent: true }, (success, errorType) => {
+//       if (success) {
+//         console.log("Success");
+//         // Enviar confirmación al proceso de renderizado
+//         event.sender.send(
+//           "printPDFComplete",
+//           "El PDF se ha enviado a la cola de impresión."
+//         );
+//       } else {
+//         // Enviar error al proceso de renderizado
+//         event.sender.send(
+//           "printPDFComplete",
+//           "Error al imprimir el PDF: " + errorType
+//           );
+//           console.log("Error: ", errorType);
+//       }
+//       console.log("Exit");
+//       printWindow.close();
+//     });
+//   });
+// } catch (error) {
+//     console.log('Error: ',error);
+// }
+// });
+// ----------------------------------------------------------------
+
 // Al utilizar ipcMain.handle
 // en lugar de ipcMain.on, estás creando una
 // función que devuelve un valor y que puede
@@ -63,6 +222,8 @@ ipcMain.handle("deleteProduct", async (event, id) => {
 // }
 let window;
 function createWindow() {
+  app.commandLine.appendSwitch("allow-file-access-from-files");
+
   window = new BrowserWindow({
     width: 800,
     height: 600,
@@ -71,7 +232,7 @@ function createWindow() {
       contextIsolation: false,
     },
   });
-  window.loadFile("src/ui/principal.html");
+  window.loadFile("src/ui/login.html");
 }
 ipcMain.on("abrirInterface", (event, interfaceName) => {
   try {
