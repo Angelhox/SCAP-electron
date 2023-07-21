@@ -1,25 +1,43 @@
 const { ipcRenderer } = require("electron");
+const validator = require("validator");
 // const abrirInterface = async()=> {
 //    const result=  ipcRenderer.send('abrirInterface',"src/ui/index.html");
 //   }
 const usuarioUsuario = document.getElementById("usuario");
 const usuarioClave = document.getElementById("clave");
+const mensajeError = document.getElementById("mensajeError");
+// ----------------------------------------------------------------
 // Funcion de inicio de session
 // ----------------------------------------------------------------
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const usuario = usuarioUsuario.value;
   const clave = usuarioClave.value;
-  await ipcRenderer.send("validarUsuarios", {
-    usuario,
-    clave,
-  });
+  if (validator.isEmpty(usuario) || validator.isEmpty(clave)) {
+    mensajeError.textContent = "Todos los campos son obligatorios.";
+  }
+  //else if (!validator.isEmail(usuario)) {
+  //    mensajeError.textContent = "El correo electrónico ingresado no es válido.";
+  //  }
+  else if (!validator.isLength(clave, { max: 20 })) {
+    mensajeError.textContent =
+      "La contraseña tiene un maximo de 20 caracteres.";
+  } else {
+    // Si los campos son válidos, puedes enviar el formulario aquí
+    mensajeError.textContent = "";
+    await ipcRenderer.send("validarUsuarios", {
+      usuario,
+      clave,
+    });
+
+    console.log("Formulario válido, se puede enviar.");
+  }
+
   usuarioUsuario.focus();
 });
 // ----------------------------------------------------------------
 // Funcion de recepcion de respuesta al intentar logearse
 // ----------------------------------------------------------------
-// En el archivo de renderizado
 ipcRenderer.on("loginResponse", async (event, response) => {
   if (response.success) {
     console.log("Incio de session correcto");
@@ -60,7 +78,7 @@ function cancelar() {
 // Funcion para salir de la aplicacion
 // ----------------------------------------------------------------
 function salir() {
-ipcRenderer.send('salir');
+  ipcRenderer.send("salir");
 }
 // loginForm.addEventListener("submit", async (e) => {
 //   e.preventDefault();

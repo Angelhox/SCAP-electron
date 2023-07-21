@@ -147,7 +147,7 @@
 
     <div class="row container-fluid" style="padding-top: 150px">
       <div class="col-12">
-        <p class="text-white fs-5">Inicio/Registros/Socios</p>
+        <p class="fs-4">Administra los registros de los socios</p>
       </div>
       <div
         class="col-lg-8 col-md-8 col-sm-12"
@@ -164,20 +164,18 @@
                 </th>
               </tr>
               <tr>
-                <th>Id</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Cédula</th>
                 <th>Teléfono</th>
                 <th>Correo</th>
-                <th>Direccion</th>
+                <th>Sector</th>
                 <th></th>
                 <th></th>
               </tr>
             </thead>
             <tbody id="socios">
               <tr>
-                <td>1</td>
                 <td>Juan Alvaro</td>
                 <td>Macias Proaño</td>
                 <td>1002480697</td>
@@ -191,56 +189,88 @@
       </div>
       <div class="col-lg-4 col-md-4 col-sm-12" style="padding-top: 10px">
         <form class="form-horizontal" id="socioForm">
-          <div class="col-12 text-white text-center fs-4">Datos del Socio</div>
-          <input type="text" class="form-control my-2" placeholder="Id" />
-          <input
-            type="text"
-            class="form-control my-2"
-            placeholder="Nombres del socio"
-            id="nombre"
-          />
+          <div class="col-12 text-center fs-4">Datos del Socio</div>
+          <div class="col-12">
+            <label for="nombre">Nombres</label>
+            <input
+              type="text"
+              class="form-control my-2"
+              placeholder="Nombres del socio"
+              id="nombre"
+            />
+          </div>
+          <div class="col-12">
+          <label for="apellido">Apellidos</label>
           <input
             type="text"
             class="form-control my-2"
             placeholder="Apellidos del socio"
             id="apellido"
           />
+        </div>
+        <div class="col-12">
+        <label for="cedula">Cedula</label>
           <input
             type="number"
             class="form-control my-2"
             placeholder="Cédula o Ruc del socio"
             id="cedula"
           />
+        </div>
+        <div class="col-12">
+          <label for="nacimiento">Fecha de nacimiento</label>
           <input
             type="date"
             class="form-control my-2"
             placeholder="Fecha de Nacimiento"
             id="nacimiento"
           />
+        </div>
+        <div class="col-12">
+        <label for="sector">Barrio</label>
+          <input
+            type="text"
+            class="form-control my-2"
+            placeholder="Sector"
+            id="sector"
+          />
+        </div>
+        <div class="col-12">
+          <label for="fijo"> Telefono fijo</label>
           <input
             type="number"
             class="form-control my-2"
             placeholder="Teléfono fijo"
             id="fijo"
           />
-          <input
+        </div>
+        <div class="col-12">
+          <label for="movil">Celular</label>
+          <input 
             type="number"
             class="form-control my-2"
             placeholder="Teléfono móvil"
             id="movil"
           />
+        </div>
+        <div class="col-12">
+          <label for="correo">Correo</label>
           <input
             type="email"
             class="form-control my-2"
             placeholder="Correo"
             id="correo"
           />
+        </div>
+        <div class="col-12">
+          <label for="direccion">Dirección</label>
           <input
             type="text"
             class="form-control my-2"
             placeholder="Dirección"
             id="direccion"
           />
+        </div>
 
           <div class="col-12 d-flex justify-content-end">
             <button class="btn btn-primary mx-2 rounded-2">Guardar</button>

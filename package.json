@@ -33,6 +33,7 @@
     "pdfkit": "^0.13.0",
     "promise-mysql": "^5.2.0",
     "reload": "^3.2.1",
-    "select2": "^4.1.0-rc.0"
+    "select2": "^4.1.0-rc.0",
+    "validator": "^13.9.0"
   }
 }

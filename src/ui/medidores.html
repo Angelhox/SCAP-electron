@@ -165,18 +165,21 @@
       </nav>
     </header>
 
-    <div class="row container-fluid" >
-      <section class="container-fluid active" style="padding-top: 150px" id="seccion1">
-        <div class="col-12 d-flex justify-content-end">
-          <button class="btn btn-success" id="btnSeccion1">Nuevo contrato</button>
+    <div class="row container-fluid">
+      <section class="container-fluid" style="padding-top: 150px" id="seccion1">
+        <div class="col-12">
+          <p class="fs-5">Administra los contratos existentes</p>
         </div>
-        <!-- <div class="col-12">
-          <p class="text-white fs-5">Inicio/Registros/Implementos</p>
-        </div> -->
+        <div class="col-12 d-flex justify-content-end">
+          <button class="btn btn-success" id="btnSeccion1">
+            Nuevo contrato
+          </button>
+        </div>
+
         <div
           class="col-lg-12 col-md-12 col-sm-12 my-2"
           style="
-            height: 80vh;
+            height: 60vh;
             overflow-y: auto;
             overflow-x: auto;
             /* padding: 10px; */
@@ -189,7 +192,7 @@
               <thead class="table-dark">
                 <tr>
                   <th colspan="9" class="text-center fs-4">
-                    Listado de medidores en fucionamiento
+                    Listado de contratos
                     <i class="fa-solid fa-user-tie"></i>
                   </th>
                 </tr>
@@ -199,8 +202,8 @@
                   <th>Cédula</th>
                   <th>Alcanterillado</th>
                   <th>Recoleccion de Desechos</th>
-                  <th>Pago Escrituras</th>            
-                  <th>Pago Agua Potable</th>            
+                  <th>Pago Escrituras</th>
+                  <th>Pago Agua Potable</th>
                   <th></th>
                   <th></th>
                 </tr>
@@ -218,21 +221,22 @@
           </div>
         </div>
       </section>
-      <section class="container-fluid" style="padding-top: 150px" id="seccion2">
-        <div class="col-12 d-flex justify-content-end">
-          <button class="btn btn-success" id="btnSeccion2">Lista de contratos</button>
+      <section
+        class="container-fluid active"
+        style="padding-top: 150px"
+        id="seccion2"
+      >
+        <div class="col-12 d-flex justify-content-between">
+          <div class="text-center fs-4">Datos del nuevo contrato</div>
+          <button class="btn btn-success align-self-end" id="btnSeccion2">
+            Lista de contratos
+          </button>
         </div>
-        <div
-          class="col-lg-12 col-md-12 col-sm-12"
-          style="padding-top: 10px; display: block"
-        >
+        <div class="col-lg-12 col-md-12 col-sm-12" style="display: block">
           <form class="form-horizontal" id="contratoForm">
             <div class="row">
-              <div class="col-12 text-white text-center fs-4">
-                Datos del contrato
-              </div>
               <div class="col-3">
-                <label class="text-white">Fecha del contrato</label>
+                <label>Fecha del contrato</label>
                 <input
                   type="date"
                   class="form-control my-2"
@@ -240,14 +244,20 @@
                   id="fechaContrato"
                 />
               </div>
-              <div class="col-12 text-white justify-content-start fs-4">
+              <hr class="mt-2 mb-2 bg-dark" />
+              <div
+                class="col-12 justify-content-start fs-6"
+                style="font-style: italic"
+              >
                 Datos del socio contratante
               </div>
+              <hr class="mt-2 mb-2 bg-dark" />
               <div class="col-3 my-2">
+                <label for="cedulaSocioContratante">Cédula</label>
                 <input
                   type="text"
                   id="cedulaSocioContratante"
-                  placeholder="Cédula del socio"
+                  placeholder="Ingresa cedula o ruc"
                   class="form-control"
                 />
                 <div id="contenedor-sugerencias">
@@ -258,22 +268,14 @@
                 </div>
               </div>
               <div class="col-3 my-2">
-                <!-- <select id="normalize">
-                <option value=""></option>
-                <option value="1">Awesome</option>
-                <option value="2">Beast</option>
-                <option value="3">Compatible</option>
-                <option value="4">Thomas Edison</option>
-                <option value="5">Nikola</option>
-                <option value="6">Selectize</option>
-                <option value="7">Javascript</option>
-              </select> -->
+                <label for="">Apellidos</label>
 
                 <input
                   type="text"
                   id="apellidoSocioContratante"
                   placeholder="Apellidos del socio"
                   class="form-control"
+                  readonly
                 />
                 <!-- <div
                 id="suggestion-list2"
@@ -281,11 +283,13 @@
               ></div> -->
               </div>
               <div class="col-3">
+                <label for="">Nombres</label>
                 <input
                   type="text"
                   class="form-control my-2"
                   placeholder="Nombres del socio"
                   id="nombreSocioContratante"
+                  readonly
                 />
               </div>
               <div class="col-3 d-flex justify-content-end my-2">
@@ -293,7 +297,11 @@
                   Administrar socios
                 </button>
               </div>
-              <div class="col-12 text-white fs-4">Servicios del contrato</div>
+              <hr class="mt-2 mb-2 bg-dark" />
+              <div class="col-12 fs-6 mb-1" style="font-style: italic">
+                Servicios del contrato
+              </div>
+              <hr class="mt-2 mb-2 bg-dark" />
               <div class="col-3">
                 <div class="form-check form-switch">
                   <input
@@ -301,6 +309,8 @@
                     type="checkbox"
                     role="switch"
                     id="servicioRecoleccion"
+                    checked
+                    disabled
                   />
                   <label class="form-check-label" for="flexSwitchCheckDefault"
                     >Recolección de desechos</label
@@ -314,6 +324,8 @@
                     type="checkbox"
                     role="switch"
                     id="servicioAlcanterillado"
+                    checked
+                    disabled
                   />
                   <label class="form-check-label" for="flexSwitchCheckChecked"
                     >Alcanterillado</label
@@ -341,6 +353,8 @@
                     type="checkbox"
                     role="switch"
                     id="servicioEscrituras"
+                    checked
+                    disabled
                   />
                   <label class="form-check-label" for="flexSwitchCheckDisabled"
                     >Cobro escrituras</label
@@ -362,66 +376,72 @@
                 >Disabled checked switch checkbox input</label
               >
             </div> -->
-              <div class="col-12 text-white fs-4">Contrato con medidor</div>
+              <hr class="bg-dark mt-2 mb-2" />
+              <div class="col-12 fs-6" style="font-style: italic">
+                Contrato con medidor
+              </div>
+              <hr class="mt-2 mb-2 bg-dark" />
               <!-- Select con la lista de medidores disponible -->
 
               <div class="col-3">
-                <label class="text-white">Fecha de instalación</label>
+                <label class="">Fecha de instalación</label>
                 <input
                   type="date"
-                  class="form-control my-2"
+                  class="form-control"
                   placeholder="Fecha de Instalación"
                   id="fechaInstalacion"
                   disabled
                 />
               </div>
               <div class="col-3">
-                <label class="text-white"
-                  >Selecciona un medidor disponible</label
-                >
+                <label class="">Medidor disponible</label>
                 <select
-                  class="form-control my-2"
+                  class="form-control"
                   aria-label="Default select example"
                   id="medidoresDisponibles"
                   disabled
-                >
-                  <option value="1">Selecciona un medidor1</option>
-                </select>
+                ></select>
               </div>
 
-              <div class="col-3 d-flex align-items-end">
+              <div class="col-3">
+                <label for="">Código</label>
                 <input
                   type="text"
-                  class="form-control my-2"
+                  class="form-control"
                   placeholder="Código del medidor"
                   id="codigo"
                   disabled
                 />
               </div>
-              <div class="col-3 d-flex align-items-end">
+              <div class="col-3">
+                <label for="">Marca</label>
                 <input
                   type="text"
-                  class="form-control my-2"
+                  class="form-control"
                   placeholder="Marca"
                   id="marca"
+                  readonly
                   disabled
                 />
               </div>
               <div class="col-6">
+                <label for="">Descripción</label>
                 <input
                   type="text"
-                  class="form-control my-2"
+                  class="form-control"
                   placeholder="Descripcion del medidor"
+                  readonly
                   id="descripcion"
                   disabled
                 />
               </div>
-
-              <div class="col-12 text-white text-center fs-4">
+              <hr class="bg-dark mt-2 mb-2" />
+              <div class="col-12 fs-6" style="font-style: italic">
                 Ubicacion del nuevo medidor
               </div>
-
+              <hr class="bg-dark mt-2 mb-2" />
               <div class="col-4">
+                <label for="">Número de casa</label>
                 <input
                   type="text"
                   step="any"
@@ -432,6 +452,7 @@
                 />
               </div>
               <div class="col-4">
+                <label for="">Barrio</label>
                 <input
                   type="text"
                   step="any"
@@ -442,6 +463,7 @@
                 />
               </div>
               <div class="col-4">
+                <label for="">Calle principal</label>
                 <input
                   type="text"
                   step="any"
@@ -452,6 +474,7 @@
                 />
               </div>
               <div class="col-4">
+                <label for="">Calle secundaria</label>
                 <input
                   type="text"
                   step="any"
@@ -462,6 +485,7 @@
                 />
               </div>
               <div class="col-6">
+                <label for="">Referencia</label>
                 <input
                   type="text"
                   step="any"
@@ -472,6 +496,7 @@
                 />
               </div>
               <div class="col-6">
+                <label for="">Observación</label>
                 <input
                   type="text"
                   step="any"

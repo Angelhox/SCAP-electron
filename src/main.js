@@ -232,7 +232,7 @@ function createWindow() {
       contextIsolation: false,
     },
   });
-  window.loadFile("src/ui/login.html");
+  window.loadFile("src/ui/principal.html");
 }
 ipcMain.on("abrirInterface", (event, interfaceName) => {
   try {
@@ -335,8 +335,8 @@ ipcMain.handle("createSocio", async (event, socio) => {
     const result = await conn.query("Insert into socios set ?", socio);
     console.log(result);
     new Notification({
-      title: "Electrom Mysql",
-      body: "New socio saved succesfully",
+      title: "Socio guardado",
+      body: "Se registró al nuevo socio con exito!",
     }).show();
     socio.id = result.insertId;
     return socio;
@@ -471,6 +471,35 @@ ipcMain.handle("getMedidorById", async (event, id) => {
   console.log(result[0]);
   return result[0];
 });
+ipcMain.handle("getDatosMedidorById", async (event, id) => {
+  const conn = await getConnection();
+  var result = "";
+  result = await conn.query(
+    "select medidores.id as medidorId,medidores.codigo,medidores.fechaInstalacion," +
+      "medidores.marca,medidores.barrio,medidores.callePrincipal,medidores.calleSecundaria," +
+      "medidores.numeroCasa,medidores.referencia,medidores.observacion,contratos.id as " +
+      "contratosId,contratos.fecha as fechaContrato,contratos.pagoEscrituras,contratos.pagoRecoleccionDesechos," +
+      "contratos.pagoAlcanterillado,contratos.pagoAguaPotable,socios.id as sociosId," +
+      "socios.nombre,socios.apellido,socios.cedula from medidores join contratos on " +
+      "contratos.id=medidores.contratosId join socios on socios.id=contratos.sociosId " +
+      "where contratos.id=?;",
+    id
+  );
+  console.log("Datos medidor: ", result[0]);
+  if (result[0] == undefined) {
+    result = await conn.query(
+      "select contratos.id as " +
+        "contratosId,contratos.fecha as fechaContrato,contratos.pagoEscrituras," +
+        "contratos.pagoRecoleccionDesechos," +
+        "contratos.pagoAlcanterillado,contratos.pagoAguaPotable,socios.id as sociosId," +
+        "socios.nombre,socios.apellido,socios.cedula from contratos join socios on " +
+        "socios.id=contratos.sociosId " +
+        "where contratos.id=?;",
+      id
+    );
+  }
+  return result[0];
+});
 ipcMain.handle("updateMedidor", async (event, id, medidor) => {
   const conn = await getConnection();
   const result = await conn.query("UPDATE medidores set ? where id = ?", [
@@ -487,7 +516,59 @@ ipcMain.handle("deleteMedidor", async (event, id) => {
   console.log(result);
   return result;
 });
+// ----------------------------------------------------------------
 // Funciones de los contratos
+// ----------------------------------------------------------------
+// Verificar contratos anteriores de los socios
+ipcMain.handle("getContratosAnterioresByCedula", async (event, cedula) => {
+  const conn = await getConnection();
+  const sinMedidores = await conn.query(
+    "select count(contratos.id)as sinMedidor,contratos.fecha,socios.cedula from contratos " +
+      "join socios on socios.id=contratos.sociosId where socios.cedula='" +
+      cedula +
+      "' and " +
+      "contratos.pagoAguaPotable='No';"
+  );
+  const conMedidores = await conn.query(
+    "select count(contratos.id)as conMedidor,contratos.fecha,socios.cedula from contratos " +
+      "join socios on socios.id=contratos.sociosId where socios.cedula='" +
+      cedula +
+      "' and " +
+      "contratos.pagoAguaPotable='Si';"
+  );
+  var sinMedidor = sinMedidores[0].sinMedidor;
+  var conMedidor = conMedidores[0].conMedidor;
+  const contratos = {
+    sinMedidor: sinMedidor,
+    conMedidor: conMedidor,
+  };
+  if (sinMedidor == 0 && conMedidor > 0) {
+    event.sender.send(
+      "showAlertMedidoresExistentes",
+      "Este usuario ya registra " +
+        conMedidor +
+        " contratos con Medidor\nVerifica el registro de contratos antes de crear uno nuevo!"
+    );
+  } else if (sinMedidor > 0 && conMedidor == 0) {
+    event.sender.send(
+      "showAlertMedidoresExistentes",
+      "Este usuario ya registra " +
+        sinMedidor +
+        " contratos sin Medidor\nVerifica el registro de contratos antes de crear uno nuevo!"
+    );
+  } else if (sinMedidor > 0 && conMedidor > 0) {
+    event.sender.send(
+      "showAlertMedidoresExistentes",
+      "Este usuario ya registra " +
+        sinMedidor +
+        " contratos sin Medidor y " +
+        conMedidor +
+        " contratos con medidor\nVerifica el registro de contratos antes de crear uno nuevo!"
+    );
+  }
+  console.log(contratos);
+  return contratos;
+});
 
 ipcMain.handle("getDatosContratos", async () => {
   const conn = await getConnection();
@@ -519,6 +600,7 @@ ipcMain.handle("createContrato", async (event, contrato) => {
 // Funciones de las planillas
 ipcMain.handle("createPlanillas", async (event) => {
   let numeroContratos = [];
+
   try {
     const conn = await getConnection();
     // console.log("Recibido: ", contrato);
@@ -528,16 +610,45 @@ ipcMain.handle("createPlanillas", async (event) => {
     // Recorro un ciclo de acuerdo al numero de contratos
     console.log("numeroContratos: ", numeroContratos);
     numeroContratos.forEach(async function (contrato) {
-      const planillaDefecto = {
-        fecha: formatearFecha(new Date()),
-        valor: 2.0,
-        estado: "Por Cobrar",
-        lecturaAnterior: 0.0,
-        lecturaActual: 0.0,
-        observacion: "NA",
-        estadoEdicion: "Sin editar",
-        contratosId: contrato.id,
-      };
+      var conMedidor = contrato.pagoAguaPotable;
+      if (conMedidor == "Si") {
+        console.log("Se encontraron los contratos con medidor", conMedidor);
+        // Obtenemos la lectura de la planilla anterior
+        const datosPlanillaAnterior = await conn.query(
+          "select planillas.id as planillasId," +
+            "planillas.fecha as fechaPlanillas,planillas.valor,planillas.estado,planillas.lecturaAnterior," +
+            "planillas.codigo,planillas.estadoEdicion,planillas.observacion,planillas.lecturaActual," +
+            "contratos.id as contratosId,contratos.pagoEscrituras,contratos.pagoRecoleccionDesechos," +
+            "contratos.pagoAlcanterillado,contratos.pagoAguaPotable from planillas join contratos on " +
+            "contratos.id=planillas.contratosId where contratosId=? order by fechaPlanillas desc limit 1;",
+          contrato.id
+        );
+        var planillaDefecto;
+        var lecturaAnterior = datosPlanillaAnterior.lecturaActual;
+        console.log("Se encontro la lectura anterior?: " + lecturaAnterior);
+        planillaDefecto = {
+          fecha: formatearFecha(new Date()),
+          valor: 4.6,
+          estado: "Por Cobrar",
+          lecturaAnterior: lecturaAnterior,
+          lecturaActual: 0.0,
+          observacion: "NA",
+          estadoEdicion: "Sin editar",
+          contratosId: contrato.id,
+        };
+      } else {
+        planillaDefecto = {
+          fecha: formatearFecha(new Date()),
+          valor: 2.6,
+          estado: "Por Cobrar",
+          lecturaAnterior: 0.0,
+          lecturaActual: 0.0,
+          observacion: "NA",
+          estadoEdicion: "Sin editar",
+          contratosId: contrato.id,
+        };
+      }
+
       const result = await conn.query(
         "Insert into planillas set ?",
         planillaDefecto
@@ -554,22 +665,44 @@ ipcMain.handle("createPlanillas", async (event) => {
         descripcion: parametrosDesechos[0].descripcion,
         fecha: formatearFecha(new Date()),
         valor: parametrosDesechos[0].valor,
-        planillaId: planillaDefecto.id,
+        tipo: "servicio",
+        estado: "Por cobrar",
       };
       const resultServicios1 = await conn.query(
         "Insert into servicios set ? ",
         servicioDesechos
+      );
+      // Creamos un registro en la tabla de rompimiento extrasplanilla
+      const extrasplanilla = {
+        serviciosId: resultServicios1.insertId,
+        descuentosId: 3,
+        planillasId: planillaDefecto.id,
+      };
+      const extras = conn.query(
+        "insert into extrasplanilla set ? ",
+        extrasplanilla
       );
       const servicioAlcantarillado = {
         servicio: parametrosAlcantarillado[0].nombreParametro,
         descripcion: parametrosAlcantarillado[0].descripcion,
         fecha: formatearFecha(new Date()),
         valor: parametrosAlcantarillado[0].valor,
-        planillaId: planillaDefecto.id,
+        tipo: "servicio",
+        estado: "Por cobrar",
       };
       const resultServicios2 = await conn.query(
         "Insert into servicios set ? ",
         servicioAlcantarillado
+      );
+      // Creamos un registro en la tabla de rompimiento extrasplanilla
+      const extrasplanilla2 = {
+        serviciosId: resultServicios2.insertId,
+        descuentosId: 3,
+        planillasId: planillaDefecto.id,
+      };
+      const extras2 = conn.query(
+        "insert into extrasplanilla set ? ",
+        extrasplanilla2
       );
       console.log(result);
     });
@@ -577,8 +710,8 @@ ipcMain.handle("createPlanillas", async (event) => {
       title: "Electrom Mysql",
       body: "New planilla genereted succesfully",
     }).show();
-    contrato.id = result.insertId;
-    return contrato;
+    // contrato.id = result.insertId;
+    // return contrato;
   } catch (error) {
     console.log(error);
   }
@@ -732,6 +865,10 @@ ipcMain.handle("getServiciosByPlanillaId", async (event, planillaId) => {
   console.log(result);
   return result;
 });
+// ----------------------------------------------------------------
+// Funcion que carga los servicios de acuerdo al id de la planilla
+// ----------------------------------------------------------------
+
 // ----------------------------------------------------------------
 // Funcion que carga las cuotas de acuerdo al id de la planilla
 ipcMain.handle("getCuotasByPlanillaId", async (event, planillaId) => {

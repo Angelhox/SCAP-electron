@@ -1,10 +1,17 @@
 const { timeStamp } = require("console");
 const { ipcRenderer, remote } = require("electron");
 const printer = require("pdf-to-printer");
-// ----------------------------------------------------------------
+
 const pdf = require("html-pdf");
 const nombre = "Angelho Client";
 const imprimirPDF = async () => {
+  const nombrePrint = socioNombresUp.value;
+  const cedulaPrint = socioCedulaUp.value;
+  const medidorPrint = codigoMedidorUp.value;
+  const totalconsumoPrint = totalSinServicios.value;
+  const direccionPrint = medidorUbicacionUp.value;
+  const lecturaActualPrint = planillaLecturaActual.value;
+  const lecturaAnteriorPrint = planillaLecturaAnterior.value;
   const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -114,16 +121,16 @@ const imprimirPDF = async () => {
     </div>
 
     <div class="invoice-details">
-      <p><strong>Socio:</strong> ${nombre}</p>
-      <p><strong>Cedula-Ruc:</strong> 15 de enero de 2022</p>
+      <p><strong>Socio:</strong> ${nombrePrint}</p>
+      <p><strong>Cedula-Ruc:</strong>${cedulaPrint}</p>
       <p><strong>Telefono:</strong>0984760554</p>
-      <p><strong>Direccion</strong>Cayambe</p>
+      <p><strong>Direccion</strong${direccionPrint}</p>
     </div>
     <hr class="separator" />
     <div class="invoice-details">
       <p><strong>Planilla:</strong> 9999999999</p>
-      <p><strong>Medidor:</strong> NA</p>
-      <p><strong>Ubicacion:</strong>Barrio Central, Floresta y Buenavista</p>
+      <p><strong>Medidor:</strong> ${medidorPrint}</p>
+      <p><strong>Ubicacion:</strong>${direccionPrint}</p>
     </div>
     <hr class="separator" />
     <table class="invoice-items">
@@ -141,11 +148,11 @@ const imprimirPDF = async () => {
       </thead>
       <tbody>
         <tr>
-          <td>000000075</td>
-          <td>000000175</td>
+          <td>>${lecturaAnteriorPrint}</td>
+          <td>${lecturaActualPrint}</td>
           <td>100</td>
           <td>Industrial</td>
-          <td>$20</td>
+          <td>${totalconsumoPrint}</td>
         </tr>
       </tbody>
     </table>
@@ -1091,6 +1098,11 @@ var seccion2 = document.getElementById("seccion2");
 
 btnSeccion1.addEventListener("click", function () {
   console.log("btn1");
+  seccion1.classList.remove("active");
+  seccion2.classList.add("active");
+});
+btnPdf.addEventListener("click", function () {
+  console.log("btnPDF");
   // seccion1.classList.remove("active");
   // seccion2.classList.add("active");
   imprimirPDF();
@@ -1115,7 +1127,7 @@ const abrirUsuarios = async () => {
   await ipcRenderer.send("abrirInterface", url);
 };
 const abrirPagos = async () => {
-  const url = "src/ui/pagos.html";
+  const url = "src/ui/planillas.html";
   await ipcRenderer.send("abrirInterface", url);
 };
 const abrirPlanillas = async () => {

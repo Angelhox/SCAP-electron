@@ -1,4 +1,6 @@
 const { ipcRenderer } = require("electron");
+const validator = require("validator");
+
 const socioNombre = document.getElementById("nombre");
 const socioApellido = document.getElementById("apellido");
 const socioCedula = document.getElementById("cedula");
@@ -7,21 +9,38 @@ const socioFijo = document.getElementById("fijo");
 const socioMovil = document.getElementById("movil");
 const socioCorreo = document.getElementById("correo");
 const socioDireccion = document.getElementById("direccion");
+const socioSector = document.getElementById("sector");
 const sociosList = document.getElementById("socios");
 let socios = [];
 let editingStatus = false;
 let editSocioId = "";
 socioForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  var correoSociodf = "NA";
+  var fijoSociodf = "NA";
+  var movilSociodf = "NA";
+
+  if (socioCorreo.value !== null && socioCorreo.value !== "") {
+    correoSociodf = socioCorreo.value;
+  }
+
+  if (socioFijo.value !== null && socioFijo.value !== "") {
+    fijoSociodf = socioFijo.value;
+  }
+
+  if (socioMovil.value !== null && socioMovil.value !== "") {
+    movilSociodf = socioMovil.value;
+  }
   const newSocio = {
     nombre: socioNombre.value,
     apellido: socioApellido.value,
     cedula: socioCedula.value,
     fechaNacimiento: socioNacimiento.value,
-    telefonoFijo: socioFijo.value,
-    telefonoMovil: socioMovil.value,
-    correo: socioCorreo.value,
+    telefonoFijo: fijoSociodf,
+    telefonoMovil: movilSociodf,
+    correo: correoSociodf,
     direccion: socioDireccion.value,
+    sectorizacion: socioSector.value,
   };
   if (!editingStatus) {
     const result = await ipcRenderer.invoke("createSocio", newSocio);
@@ -46,13 +65,13 @@ function renderSocios(socios) {
   socios.forEach((socio) => {
     sociosList.innerHTML += `
        <tr>
-       <td>${socio.id}</td>
+   
       <td>${socio.nombre}</td>
       <td>${socio.apellido}</td>
       <td>${socio.cedula}</td>
       <td>${socio.telefonoMovil}</td>
       <td>${socio.correo}</td>
-      <td>${socio.direccion}</td>
+      <td>${socio.sectorizacion}</td>
       <td>
       <button onclick="deleteSocio('${socio.id}')" class="btn "> 
       <i class="fa-solid fa-user-minus"></i>
@@ -77,6 +96,7 @@ const editSocio = async (id) => {
   socioMovil.value = socio.telefonoMovil;
   socioCorreo.value = socio.correo;
   socioDireccion.value = socio.direccion;
+  socioSector.value = socio.sectorizacion;
 
   editingStatus = true;
   editSocioId = socio.id;

@@ -171,7 +171,7 @@
                   >Usuario</label
                 >
                 <div class="col-sm-10">
-                  <input type=text" class="form-control" id="usuario" />
+                  <input type=text" class="form-control" id="usuario" required/>
                 </div>
               </div>
               <div class="row mb-3">
@@ -179,12 +179,13 @@
                   >Contraseña</label
                 >
                 <div class="col-sm-10">
-                  <input type="password" class="form-control" id="clave" />
+                  <input type="password" class="form-control" id="clave" required />
                 </div>
               </div>
 
               <button class="btn btn-primary align-self-end">Ingresar</button>
               <button type="button" onclick="cancelar()" class="btn btn-primary align-self-end">Cancelar</button>
+              <div id="mensajeError" class="text-white"></div>
             </div>
           </form>
         </div>
